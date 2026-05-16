@@ -216,7 +216,7 @@ function handleLogout() {
   animation: fadeInUp 0.6s ease both;
 }
 .avatar-wrap {
-  @apply relative inline-block cursor-pointer group;
+  @apply relative inline-block cursor-pointer;
 }
 .avatar, .avatar-img {
   @apply w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold relative z-10;
@@ -230,8 +230,12 @@ function handleLogout() {
   background: linear-gradient(135deg, #FF6B6B, #FF8E53);
 }
 .avatar-overlay {
-  @apply absolute inset-0 rounded-full flex items-center justify-center text-lg z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-200;
+  @apply absolute inset-0 rounded-full flex items-center justify-center text-lg z-20 transition-opacity duration-200;
   background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+}
+.avatar-wrap:hover .avatar-overlay {
+  opacity: 1;
 }
 .role-badge {
   @apply inline-block px-3 py-1 rounded-full text-xs mt-2;
