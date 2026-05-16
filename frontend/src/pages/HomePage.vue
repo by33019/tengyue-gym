@@ -30,8 +30,18 @@
       </router-link>
     </div>
 
-    <!-- 近期数据 -->
-    <div class="section-title">最近动态</div>
+    <!-- 数据与社区入口 -->
+    <div class="section-title mt-2">数据与社区</div>
+    <div class="action-grid">
+      <router-link v-for="a in secondaryActions" :key="a.path" :to="a.path"
+        :class="['action-card', a.accent]">
+        <span class="action-icon">{{ a.icon }}</span>
+        <span class="action-label">{{ a.label }}</span>
+        <span class="action-desc">{{ a.desc }}</span>
+      </router-link>
+    </div>
+
+    <!-- 最近动态 -->
     <div class="feed-card" v-if="todayCount !== null">
       <div class="feed-row">
         <span>今日打卡</span>
@@ -86,6 +96,12 @@ const actions = [
   { path: '/plan', icon: '📋', label: '我的计划', desc: '查看/创建训练计划', accent: 'accent-green' },
   { path: '/ai', icon: '🤖', label: 'AI 助手', desc: '智能健身指导', accent: 'accent-blue' },
   { path: '/profile', icon: '👤', label: '个人中心', desc: '身体数据与成就', accent: 'accent-purple' },
+]
+
+const secondaryActions = [
+  { path: '/stats', icon: '📊', label: '数据统计', desc: '运动趋势与总览', accent: 'accent-green' },
+  { path: '/ranking', icon: '🏆', label: '排行榜', desc: '周/月 Top20', accent: 'accent-red' },
+  { path: '/community', icon: '💬', label: '社区', desc: '动态分享与互动', accent: 'accent-blue' },
 ]
 
 onMounted(async () => {

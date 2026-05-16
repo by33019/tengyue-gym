@@ -198,6 +198,10 @@ async function handleSubmit() {
   box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
 }
 select.form-input { background-image: none; }
+select.form-input option {
+  background: #1a1a20;
+  color: #fff;
+}
 
 .form-row-3 { @apply grid grid-cols-3 gap-3; }
 .form-row-2 { @apply grid grid-cols-2 gap-3; }
