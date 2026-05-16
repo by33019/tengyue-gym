@@ -6,10 +6,13 @@
     <div class="max-w-2xl mx-auto px-4 py-8 relative z-10">
       <!-- 头像 & 基础信息 -->
       <div class="hero-card">
-        <div class="avatar-wrap">
-          <div class="avatar">{{ (profile.username || '?')[0]?.toUpperCase() }}</div>
+        <div class="avatar-wrap" @click="triggerUpload" title="点击更换头像">
+          <img v-if="profile.avatar" :src="profile.avatar" class="avatar-img" />
+          <div v-else class="avatar">{{ (profile.username || '?')[0]?.toUpperCase() }}</div>
           <div class="avatar-glow"></div>
+          <div class="avatar-overlay">📷</div>
         </div>
+        <input ref="fileInput" type="file" accept="image/jpeg,image/png,image/gif" hidden @change="onFileChange" />
         <h1 class="text-2xl font-bold text-white mt-4">{{ profile.username }}</h1>
         <span :class="['role-badge', roleClass]">{{ roleText }}</span>
       </div>
@@ -88,6 +91,7 @@ import { userApi } from '@/api/user'
 const router = useRouter()
 const userStore = useUserStore()
 
+const fileInput = ref<HTMLInputElement>()
 const profile = ref<any>({})
 const editing = ref(false)
 const saving = ref(false)
@@ -178,6 +182,17 @@ async function changePwd() {
   }
 }
 
+function triggerUpload() { fileInput.value?.click() }
+
+async function onFileChange(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  if (!file) return
+  try {
+    const { data: res } = await userApi.uploadAvatar(file)
+    if (res.code === 200) profile.value.avatar = res.data
+  } catch { /* */ }
+}
+
 function handleLogout() {
   userStore.logout()
   router.push('/login')
@@ -201,17 +216,22 @@ function handleLogout() {
   animation: fadeInUp 0.6s ease both;
 }
 .avatar-wrap {
-  @apply relative inline-block;
+  @apply relative inline-block cursor-pointer group;
 }
-.avatar {
+.avatar, .avatar-img {
   @apply w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold relative z-10;
   font-family: 'Bebas Neue', sans-serif;
   background: linear-gradient(135deg, #FF6B6B, #FF8E53);
   color: #fff;
+  object-fit: cover;
 }
 .avatar-glow {
   @apply absolute inset-0 rounded-full blur-xl opacity-30 -z-0;
   background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+}
+.avatar-overlay {
+  @apply absolute inset-0 rounded-full flex items-center justify-center text-lg z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-200;
+  background: rgba(0, 0, 0, 0.5);
 }
 .role-badge {
   @apply inline-block px-3 py-1 rounded-full text-xs mt-2;
