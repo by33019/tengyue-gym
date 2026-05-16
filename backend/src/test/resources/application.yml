@@ -23,6 +23,12 @@ jwt:
   expiration: 7200000
   refresh-expiration: 604800000
 
+minio:
+  endpoint: http://localhost:9000
+  access-key: admin
+  secret-key: admin123456
+  bucket: gym-avatars-test
+
 coze:
   api-url: https://test.coze.site/stream_run
   api-token: test-token

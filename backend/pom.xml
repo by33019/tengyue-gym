@@ -87,6 +87,13 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- MinIO -->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>8.5.10</version>
+        </dependency>
+
         <!-- H2 for testing -->
         <dependency>
             <groupId>com.h2database</groupId>

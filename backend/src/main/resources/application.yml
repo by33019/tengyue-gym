@@ -33,6 +33,12 @@ coze:
   api-token: ${COZE_API_TOKEN:}
   project-id: ${COZE_PROJECT_ID:7640283069890609190}
 
+minio:
+  endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+  access-key: ${MINIO_ACCESS_KEY:admin}
+  secret-key: ${MINIO_SECRET_KEY:admin123456}
+  bucket: ${MINIO_BUCKET:gym-avatars}
+
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
