@@ -6,6 +6,7 @@ import com.gym.dto.CheckInDTO;
 import com.gym.dto.CheckInQuery;
 import com.gym.entity.CheckIn;
 import com.gym.mapper.CheckInMapper;
+import com.gym.service.AchievementService;
 import com.gym.service.CheckInService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import java.util.Map;
 public class CheckInServiceImpl implements CheckInService {
 
     private final CheckInMapper checkInMapper;
+    private final AchievementService achievementService;
 
     @Override
     public CheckIn create(Long userId, CheckInDTO dto) {
@@ -39,6 +41,7 @@ public class CheckInServiceImpl implements CheckInService {
         entity.setNote(dto.getNote());
         entity.setCheckInTime(LocalDateTime.now());
         checkInMapper.insert(entity);
+        achievementService.checkAndAward(userId);
         return entity;
     }
 

@@ -81,6 +81,16 @@
         <button type="submit" class="submit-btn secondary" :disabled="pwdSaving">修改密码</button>
       </form>
 
+      <!-- 成就徽章 -->
+      <div class="section-title mt-8">成就徽章</div>
+      <div class="achievement-row">
+        <div v-if="achievements.length === 0" class="no-achi">还没有成就，坚持打卡获得徽章！</div>
+        <div v-for="a in achievements" :key="a.id" :class="['achi-badge', 'achi-' + a.type]">
+          <span class="achi-icon">{{ a.type === '7天' ? '🥉' : a.type === '30天' ? '🥈' : '🥇' }}</span>
+          <span class="achi-text">{{ a.type }}</span>
+        </div>
+      </div>
+
       <!-- 退出 -->
       <button class="logout-btn" @click="handleLogout">退出登录</button>
     </div>
@@ -97,6 +107,7 @@ const router = useRouter()
 const userStore = useUserStore()
 
 const fileInput = ref<HTMLInputElement>()
+const achievements = ref<any[]>([])
 const profile = ref<any>({})
 const editing = ref(false)
 const saving = ref(false)
@@ -126,7 +137,11 @@ onMounted(async () => {
   try {
     const { data: res } = await userApi.getProfile()
     if (res.code === 200) profile.value = res.data
-  } catch { /* 网络错误 */ }
+  } catch { /* */ }
+  try {
+    const { data: res } = await userApi.getAchievements()
+    if (res.code === 200) achievements.value = res.data
+  } catch { /* */ }
 })
 
 function toggleEdit() {
@@ -361,6 +376,18 @@ function handleLogout() {
 .msg-error { @apply text-sm mt-2; color: #FF6B6B; }
 
 /* 退出 */
+.achievement-row { @apply flex flex-wrap gap-3; }
+.achi-badge {
+  @apply flex flex-col items-center gap-1 p-4 rounded-2xl min-w-[80px];
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+}
+.achi-icon { font-size: 28px; }
+.achi-text { @apply text-xs font-semibold; color: #FF6B6B; }
+.achi-7天 { border-color: rgba(205,127,50,0.3); }
+.achi-30天 { border-color: rgba(192,192,192,0.3); }
+.achi-100天 { border-color: rgba(255,215,0,0.3); }
+.no-achi { @apply text-xs py-4; color: rgba(255,255,255,0.15); }
+
 .logout-btn {
   @apply w-full mt-8 py-3 rounded-xl text-sm text-white/30 transition-all duration-200 text-center;
   cursor: pointer;

@@ -3,6 +3,7 @@ package com.gym.controller;
 import com.gym.common.R;
 import com.gym.dto.PasswordDTO;
 import com.gym.dto.ProfileDTO;
+import com.gym.service.AchievementService;
 import com.gym.service.FileService;
 import com.gym.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +19,7 @@ public class UserController {
 
     private final UserService userService;
     private final FileService fileService;
+    private final AchievementService achievementService;
 
     @GetMapping("/profile")
     public R<Object> getProfile(HttpServletRequest request) {
@@ -56,6 +58,12 @@ public class UserController {
         } catch (RuntimeException e) {
             return R.fail("头像上传失败: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/achievements")
+    public R<Object> achievements(HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute("userId");
+        return R.ok(achievementService.getUserAchievements(userId));
     }
 
     @PutMapping("/anonymous")
