@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:gym_test;MODE=MySQL;DB_CLOSE_DELAY=-1;NON_KEYWORDS=USER
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema-test.sql
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      logic-delete-field: isDeleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+jwt:
+  secret: test-secret-key-for-testing-only
+  expiration: 7200000
+  refresh-expiration: 604800000
+
+coze:
+  api-url: https://test.coze.site/stream_run
+  api-token: test-token
+  project-id: test-project-id
