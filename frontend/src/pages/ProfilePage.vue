@@ -13,6 +13,7 @@
           <div class="avatar-overlay">📷</div>
         </div>
         <input ref="fileInput" type="file" accept="image/jpeg,image/png,image/gif" hidden @change="onFileChange" />
+        <p v-if="avatarMsg" class="avatar-msg">{{ avatarMsg }}</p>
         <h1 class="text-2xl font-bold text-white mt-4">{{ profile.username }}</h1>
         <span :class="['role-badge', roleClass]">{{ roleText }}</span>
       </div>
@@ -184,13 +185,23 @@ async function changePwd() {
 
 function triggerUpload() { fileInput.value?.click() }
 
+const avatarMsg = ref('')
+
 async function onFileChange(e: Event) {
   const file = (e.target as HTMLInputElement).files?.[0]
   if (!file) return
+  avatarMsg.value = '上传中...'
   try {
     const { data: res } = await userApi.uploadAvatar(file)
-    if (res.code === 200) profile.value.avatar = res.data
-  } catch { /* */ }
+    if (res.code === 200) {
+      profile.value.avatar = res.data
+      avatarMsg.value = '头像更新成功'
+    } else {
+      avatarMsg.value = res.message || '上传失败'
+    }
+  } catch (e: any) {
+    avatarMsg.value = e?.response?.data?.message || e.message || '网络错误'
+  }
 }
 
 function handleLogout() {
@@ -229,6 +240,7 @@ function handleLogout() {
   @apply absolute inset-0 rounded-full blur-xl opacity-30 -z-0;
   background: linear-gradient(135deg, #FF6B6B, #FF8E53);
 }
+.avatar-msg { @apply text-xs mt-2; color: #00F5A0; }
 .avatar-overlay {
   @apply absolute inset-0 rounded-full flex items-center justify-center text-lg z-20 transition-opacity duration-200;
   background: rgba(0, 0, 0, 0.5);
