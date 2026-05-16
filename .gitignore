@@ -30,3 +30,9 @@ Thumbs.db
 # Logs
 *.log
 logs/
+
+# Sensitive (contains real API tokens)
+doc/gym_coze.py
+
+# Claude local settings
+.claude/
