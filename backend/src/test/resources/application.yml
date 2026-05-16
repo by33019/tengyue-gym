@@ -19,7 +19,7 @@ mybatis-plus:
       logic-not-delete-value: 0
 
 jwt:
-  secret: test-secret-key-for-testing-only
+  secret: test-secret-key-for-testing-only-32chars-long
   expiration: 7200000
   refresh-expiration: 604800000
 
