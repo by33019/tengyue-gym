@@ -58,6 +58,13 @@ public class UserController {
         }
     }
 
+    @PutMapping("/anonymous")
+    public R<Void> toggleAnonymous(HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute("userId");
+        userService.toggleAnonymous(userId);
+        return R.ok();
+    }
+
     @PutMapping("/password")
     public R<Void> changePassword(@Valid @RequestBody PasswordDTO dto, HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");

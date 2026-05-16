@@ -15,7 +15,7 @@
       <div v-for="(item, i) in list" :key="i" :class="['rank-card', i < 3 ? 'top-' + (i+1) : '']">
         <span class="rank-num">{{ i + 1 }}</span>
         <div class="rank-info">
-          <span class="rank-name">用户 #{{ item.userId }}</span>
+          <span class="rank-name">{{ item.username || '匿名用户' }}</span>
         </div>
         <span class="rank-val">{{ item.value }} <small>{{ tab === 'days' ? '天' : 'kcal' }}</small></span>
       </div>

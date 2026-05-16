@@ -49,6 +49,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void toggleAnonymous(Long userId) {
+        User user = userMapper.selectById(userId);
+        if (user == null) throw new RuntimeException("用户不存在");
+        user.setIsAnonymous(user.getIsAnonymous() != null && user.getIsAnonymous() == 1 ? 0 : 1);
+        userMapper.updateById(user);
+    }
+
+    @Override
     public void changePassword(Long userId, String oldPassword, String newPassword) {
         User user = userMapper.selectById(userId);
         if (user == null) {
@@ -72,6 +80,7 @@ public class UserServiceImpl implements UserService {
         vo.setFitnessLevel(user.getFitnessLevel());
         vo.setRole(user.getRole());
         vo.setStatus(user.getStatus());
+        vo.setIsAnonymous(user.getIsAnonymous() != null ? user.getIsAnonymous() : 0);
         return vo;
     }
 }

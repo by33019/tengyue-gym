@@ -28,6 +28,10 @@
           </div>
         </div>
         <button class="edit-btn" @click="toggleEdit">{{ editing ? '取消' : '编辑资料' }}</button>
+        <div class="anon-row" @click="toggleAnon">
+          <span class="anon-label">匿名模式</span>
+          <span :class="['anon-switch', { on: profile.isAnonymous }]"></span>
+        </div>
       </div>
 
       <!-- 编辑表单 -->
@@ -204,6 +208,13 @@ async function onFileChange(e: Event) {
   }
 }
 
+async function toggleAnon() {
+  try {
+    const { data: res } = await userApi.toggleAnonymous()
+    if (res.code === 200) profile.value.isAnonymous = profile.value.isAnonymous ? 0 : 1
+  } catch { /* */ }
+}
+
 function handleLogout() {
   userStore.logout()
   router.push('/login')
@@ -286,6 +297,14 @@ function handleLogout() {
   border: 1px solid rgba(255, 255, 255, 0.08);
   cursor: pointer;
 }
+.anon-row { @apply flex justify-between items-center mt-3 px-4 py-3 rounded-xl cursor-pointer transition-all; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
+.anon-row:hover { background: rgba(255,255,255,0.04); }
+.anon-label { @apply text-sm; color: rgba(255,255,255,0.5); }
+.anon-switch { @apply w-10 h-6 rounded-full relative transition-all duration-200; background: rgba(255,255,255,0.1); }
+.anon-switch::after { content: ''; @apply absolute w-4 h-4 rounded-full bg-white top-1 left-1 transition-all duration-200; }
+.anon-switch.on { background: #00F5A0; }
+.anon-switch.on::after { left: 20px; }
+
 .edit-btn:hover {
   background: rgba(255, 255, 255, 0.1);
   color: #fff;

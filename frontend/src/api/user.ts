@@ -14,6 +14,7 @@ export const userApi = {
       headers: { 'Content-Type': 'multipart/form-data' }
     })
   },
+  toggleAnonymous() { return request.put('/user/anonymous') },
   changePassword(data: { oldPassword: string; newPassword: string }) {
     return request.put('/user/password', data)
   }

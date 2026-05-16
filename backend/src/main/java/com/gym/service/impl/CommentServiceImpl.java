@@ -4,14 +4,15 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.gym.dto.CommentDTO;
 import com.gym.entity.Comment;
 import com.gym.entity.Post;
+import com.gym.entity.User;
 import com.gym.mapper.CommentMapper;
 import com.gym.mapper.PostMapper;
+import com.gym.mapper.UserMapper;
 import com.gym.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,7 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentMapper commentMapper;
     private final PostMapper postMapper;
+    private final UserMapper userMapper;
 
     @Override
     public Map<String, Object> create(Long userId, CommentDTO dto) {
@@ -29,17 +31,18 @@ public class CommentServiceImpl implements CommentService {
         c.setContent(dto.getContent());
         commentMapper.insert(c);
 
-        // 更新帖子评论数
         Post p = postMapper.selectById(dto.getPostId());
         if (p != null) {
             p.setCommentCount(p.getCommentCount() + 1);
             postMapper.updateById(p);
         }
 
+        User u = userMapper.selectById(userId);
         Map<String, Object> m = new LinkedHashMap<>();
         m.put("id", c.getId());
         m.put("postId", c.getPostId());
         m.put("userId", c.getUserId());
+        m.put("username", getDisplayName(u));
         m.put("parentId", c.getParentId());
         m.put("content", c.getContent());
         m.put("createdAt", c.getCreatedAt());
@@ -53,15 +56,20 @@ public class CommentServiceImpl implements CommentService {
                         .eq(Comment::getPostId, postId)
                         .orderByAsc(Comment::getCreatedAt));
 
-        // 构建树形结构
+        Map<Long, User> userCache = new HashMap<>();
+        List<User> users = userMapper.selectList(null);
+        for (User u : users) userCache.put(u.getId(), u);
+
         Map<Long, List<Map<String, Object>>> childrenMap = new HashMap<>();
         List<Map<String, Object>> roots = new ArrayList<>();
 
         for (Comment c : all) {
+            User u = userCache.get(c.getUserId());
             Map<String, Object> item = new LinkedHashMap<>();
             item.put("id", c.getId());
             item.put("postId", c.getPostId());
             item.put("userId", c.getUserId());
+            item.put("username", getDisplayName(u));
             item.put("parentId", c.getParentId());
             item.put("content", c.getContent());
             item.put("createdAt", c.getCreatedAt());
@@ -98,5 +106,10 @@ public class CommentServiceImpl implements CommentService {
         if (c == null) throw new RuntimeException("评论不存在");
         if (!c.getUserId().equals(userId)) throw new RuntimeException("无权删除");
         commentMapper.deleteById(commentId);
+    }
+
+    private String getDisplayName(User u) {
+        if (u == null) return null;
+        return (u.getIsAnonymous() != null && u.getIsAnonymous() == 1) ? null : u.getUsername();
     }
 }

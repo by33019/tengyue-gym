@@ -7,5 +7,6 @@ public interface UserService {
     UserVO getProfile(Long userId);
     void updateProfile(Long userId, ProfileDTO dto);
     void updateAvatar(Long userId, String avatarUrl);
+    void toggleAnonymous(Long userId);
     void changePassword(Long userId, String oldPassword, String newPassword);
 }

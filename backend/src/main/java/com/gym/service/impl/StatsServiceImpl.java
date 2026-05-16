@@ -2,7 +2,9 @@ package com.gym.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.gym.entity.CheckIn;
+import com.gym.entity.User;
 import com.gym.mapper.CheckInMapper;
+import com.gym.mapper.UserMapper;
 import com.gym.service.StatsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 public class StatsServiceImpl implements StatsService {
 
     private final CheckInMapper checkInMapper;
+    private final UserMapper userMapper;
 
     @Override
     public Map<String, Object> getSummary(Long userId) {
@@ -72,7 +75,6 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<Map<String, Object>> getRanking(String type, String period) {
-        // 返回缓存数据或实时计算（简化：从已有数据中聚合）
         List<CheckIn> all = checkInMapper.selectList(null);
         int days = "month".equals(period) ? 30 : 7;
         LocalDate since = LocalDate.now().minusDays(days);
@@ -81,9 +83,15 @@ public class StatsServiceImpl implements StatsService {
                 .filter(c -> c.getCheckInTime().toLocalDate().isAfter(since))
                 .collect(Collectors.groupingBy(CheckIn::getUserId));
 
+        Map<Long, User> userCache = new HashMap<>();
+        List<User> users = userMapper.selectList(null);
+        for (User u : users) userCache.put(u.getId(), u);
+
         return grouped.entrySet().stream().map(e -> {
             Map<String, Object> item = new LinkedHashMap<>();
+            User u = userCache.get(e.getKey());
             item.put("userId", e.getKey());
+            item.put("username", u != null && u.getIsAnonymous() != null && u.getIsAnonymous() == 0 ? u.getUsername() : null);
             if ("calories".equals(type)) {
                 item.put("value", e.getValue().stream().mapToInt(CheckIn::getCalories).sum());
             } else {

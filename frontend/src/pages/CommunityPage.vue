@@ -12,7 +12,7 @@
       <div v-if="posts.length === 0" class="empty">暂无动态</div>
       <div v-for="p in posts" :key="p.id" class="feed-card">
         <div class="feed-header">
-          <span class="feed-user">用户 #{{ p.userId }}</span>
+          <span class="feed-user">{{ p.username || '匿名用户' }}</span>
           <span class="feed-time">{{ fmt(p.createdAt) }}</span>
         </div>
         <p class="feed-content">{{ p.content }}</p>
@@ -23,7 +23,7 @@
         <!-- 评论区 -->
         <div v-if="activePost === p.id" class="comment-section">
           <div v-for="c in comments" :key="c.id" :class="['comment-item', { reply: c.parentId }]">
-            <span class="cmt-user">用户 #{{ c.userId }}</span>
+            <span class="cmt-user">{{ c.username || '匿名用户' }}</span>
             <span class="cmt-content">{{ c.content }}</span>
             <button class="reply-btn" @click="replyTo = replyTo === c.id ? null : c.id">回复</button>
             <!-- 回复输入框 -->
@@ -33,7 +33,7 @@
             </div>
             <!-- 子评论 -->
             <div v-for="sub in c.children" :key="sub.id" class="comment-item sub">
-              <span class="cmt-user">用户 #{{ sub.userId }}</span>
+              <span class="cmt-user">{{ sub.username || '匿名用户' }}</span>
               <span class="cmt-content">{{ sub.content }}</span>
             </div>
           </div>

@@ -14,4 +14,5 @@ public class UserVO {
     private String fitnessLevel;
     private Integer role;
     private Integer status;
+    private Integer isAnonymous;
 }

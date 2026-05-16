@@ -19,6 +19,7 @@ public class User {
     private String fitnessGoal;
     private String fitnessLevel;
     private Integer status;
+    private Integer isAnonymous;
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
     @TableField(fill = FieldFill.INSERT_UPDATE)
