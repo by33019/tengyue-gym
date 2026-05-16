@@ -11,4 +11,7 @@ public interface PlanService {
     void update(Long userId, Long planId, PlanCreateDTO dto);
     void toggleStatus(Long userId, Long planId);
     Page<PlanVO> listTemplates(int page, int size);
+    void publishTemplate(Long userId, Long planId);
+    void unpublishTemplate(Long userId, Long planId);
+    PlanVO applyTemplate(Long userId, Long templateId);
 }

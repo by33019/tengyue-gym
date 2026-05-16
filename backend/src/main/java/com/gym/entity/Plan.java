@@ -18,6 +18,7 @@ public class Plan {
     private LocalDate endDate;
     private Integer status;
     private String source;
+    private Integer isTemplate;
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
     @TableField(fill = FieldFill.INSERT_UPDATE)

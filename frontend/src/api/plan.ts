@@ -10,5 +10,8 @@ export const planApi = {
   toggleStatus(id: number) { return request.put(`/plan/${id}/status`) },
   templates(params: { page?: number; size?: number }) {
     return request.get('/plan/templates', { params })
-  }
+  },
+  publishTemplate(id: number) { return request.put(`/plan/${id}/publish`) },
+  unpublishTemplate(id: number) { return request.put(`/plan/${id}/unpublish`) },
+  applyTemplate(id: number) { return request.post(`/plan/${id}/apply`) }
 }

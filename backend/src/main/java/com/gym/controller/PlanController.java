@@ -71,4 +71,25 @@ public class PlanController {
                                @RequestParam(defaultValue = "10") int size) {
         return R.ok(planService.listTemplates(page, size));
     }
+
+    @PutMapping("/{id}/publish")
+    public R<Void> publishTemplate(@PathVariable Long id, HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute("userId");
+        try { planService.publishTemplate(userId, id); return R.ok(); }
+        catch (RuntimeException e) { return R.fail(e.getMessage()); }
+    }
+
+    @PutMapping("/{id}/unpublish")
+    public R<Void> unpublishTemplate(@PathVariable Long id, HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute("userId");
+        try { planService.unpublishTemplate(userId, id); return R.ok(); }
+        catch (RuntimeException e) { return R.fail(e.getMessage()); }
+    }
+
+    @PostMapping("/{id}/apply")
+    public R<Object> applyTemplate(@PathVariable Long id, HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute("userId");
+        try { return R.ok(planService.applyTemplate(userId, id)); }
+        catch (RuntimeException e) { return R.fail(e.getMessage()); }
+    }
 }

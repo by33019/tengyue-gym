@@ -56,6 +56,9 @@
         <div class="card-actions">
           <button class="action-btn" @click="router.push('/plan/' + p.id)">详情</button>
           <button class="action-btn" @click="togglePlan(p)">{{ p.status === 1 ? '停用' : '启用' }}</button>
+          <button v-if="userRole >= 1" class="action-btn pub-btn" @click="togglePublish(p)">
+            {{ p.isTemplate || p.source === '模板' ? '取消发布' : '发布模板' }}
+          </button>
         </div>
       </div>
     </div>
@@ -63,12 +66,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
 import { planApi } from '@/api/plan'
 
 const router = useRouter()
+const userStore = useUserStore()
 const plans = ref<any[]>([])
+const userRole = computed(() => userStore.userInfo?.role ?? 0)
 const templates = ref<any[]>([])
 const filterStatus = ref<number | null>(1)
 const showTemplates = ref(false)
@@ -98,19 +104,22 @@ async function togglePlan(p: any) {
 
 async function applyTemplate(t: any) {
   try {
-    const { data: detail } = await planApi.getById(t.id)
-    if (detail.code === 200) {
-      await planApi.create({
-        planName: t.planName + '（我的）',
-        goal: t.goal,
-        difficulty: t.difficulty,
-        startDate: new Date().toISOString().slice(0, 10),
-        endDate: new Date(Date.now() + 30*86400000).toISOString().slice(0, 10),
-        source: '模板',
-        details: detail.data.details || []
-      })
+    const { data: res } = await planApi.applyTemplate(t.id)
+    if (res.code === 200) {
       loadPlans()
+      router.push('/plan/' + res.data.id)
     }
+  } catch { /* */ }
+}
+
+async function togglePublish(p: any) {
+  try {
+    if (p.isTemplate || p.source === '模板') {
+      await planApi.unpublishTemplate(p.id)
+    } else {
+      await planApi.publishTemplate(p.id)
+    }
+    loadPlans()
   } catch { /* */ }
 }
 </script>
@@ -212,6 +221,8 @@ async function applyTemplate(t: any) {
   cursor: pointer;
 }
 .action-btn:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+.pub-btn { color: #00F5A0; border-color: rgba(0,245,160,0.15); }
+.pub-btn:hover { color: #00F5A0; }
 
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(16px); }
