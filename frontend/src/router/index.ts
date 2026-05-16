@@ -10,6 +10,7 @@ const router = createRouter({
     { path: '/checkin/calendar', name: 'Calendar', component: () => import('@/pages/CalendarPage.vue') },
     { path: '/plan', name: 'Plan', component: () => import('@/pages/PlanPage.vue') },
     { path: '/plan/create', name: 'PlanCreate', component: () => import('@/pages/PlanCreatePage.vue') },
+    { path: '/plan/:id', name: 'PlanDetail', component: () => import('@/pages/PlanDetailPage.vue') },
     { path: '/stats', name: 'Stats', component: () => import('@/pages/StatsPage.vue') },
     { path: '/ranking', name: 'Ranking', component: () => import('@/pages/RankingPage.vue') },
     { path: '/community', name: 'Community', component: () => import('@/pages/CommunityPage.vue') },
