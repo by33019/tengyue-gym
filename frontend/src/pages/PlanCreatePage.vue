@@ -1,6 +1,6 @@
 <template>
   <div class="create-page">
-    <div class="max-w-lg mx-auto px-4 py-8 relative z-10">
+    <div class="page-container relative z-10">
       <div class="header-row">
         <button class="back-btn" @click="router.back()">← 返回</button>
         <h1 class="page-title">{{ editId ? '编辑计划' : '创建计划' }}</h1>

@@ -1,6 +1,6 @@
 <template>
   <div class="checkin-page">
-    <div class="max-w-lg mx-auto px-4 py-8 relative z-10">
+    <div class="page-container relative z-10">
       <!-- 头部 -->
       <div class="hero-section">
         <h1 class="page-title">今日打卡</h1>

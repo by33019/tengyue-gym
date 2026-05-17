@@ -1,6 +1,6 @@
 <template>
   <div class="calendar-page">
-    <div class="max-w-lg mx-auto px-4 py-8 relative z-10">
+    <div class="page-container relative z-10">
       <!-- 月份切换 -->
       <div class="header-row">
         <button class="nav-arrow" @click="prevMonth">←</button>

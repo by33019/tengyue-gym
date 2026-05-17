@@ -1,6 +1,6 @@
 <template>
   <div class="plan-page">
-    <div class="max-w-lg mx-auto px-4 py-8 relative z-10">
+    <div class="page-container relative z-10">
       <!-- 头部 -->
       <div class="header-row">
         <h1 class="page-title">我的计划</h1>
