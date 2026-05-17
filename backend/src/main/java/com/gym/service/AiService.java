@@ -5,7 +5,6 @@ import com.gym.entity.User;
 import com.gym.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -16,7 +15,6 @@ import java.time.Duration;
 import java.util.HexFormat;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
 
 @Slf4j
 @Service
@@ -28,9 +26,6 @@ public class AiService {
     private final AiCallLogService aiCallLogService;
     private final UserMapper userMapper;
     private final StringRedisTemplate stringRedisTemplate;
-    @Qualifier("sseExecutor")
-    private Executor sseExecutor;
-
     /** 10 分钟缓存 */
     private final Map<String, CacheEntry> responseCache = new ConcurrentHashMap<>();
 
@@ -79,7 +74,7 @@ public class AiService {
         String fullPrompt = context + "\n【用户问题】\n" + message;
 
         // 异步调用 Coze
-        sseExecutor.execute(() -> {
+        new Thread(() -> {
             StringBuilder fullResponse = new StringBuilder();
             CozeSseEmitter captureEmitter = new CozeSseEmitter() {
                 @Override
@@ -123,7 +118,7 @@ public class AiService {
                 log.error("AI 调用异常", e);
                 captureEmitter.error(e);
             }
-        });
+        }).start();
 
         return emitter;
     }
