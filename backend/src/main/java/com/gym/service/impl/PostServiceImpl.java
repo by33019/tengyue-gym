@@ -8,6 +8,7 @@ import com.gym.entity.User;
 import com.gym.mapper.PostMapper;
 import com.gym.mapper.UserMapper;
 import com.gym.service.PostService;
+import com.gym.service.SensitiveWordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +21,16 @@ public class PostServiceImpl implements PostService {
 
     private final PostMapper postMapper;
     private final UserMapper userMapper;
+    private final SensitiveWordService sensitiveWordService;
 
     @Override
     public Map<String, Object> create(Long userId, PostDTO dto) {
+        // 敏感词检测
+        String hit = sensitiveWordService.check(dto.getContent());
+        if (hit != null) {
+            throw new RuntimeException("内容包含敏感词，请修改后重新发送");
+        }
+
         Post p = new Post();
         p.setUserId(userId);
         p.setContent(dto.getContent());

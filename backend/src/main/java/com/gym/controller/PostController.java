@@ -18,7 +18,11 @@ public class PostController {
     @PostMapping
     public R<Object> create(@Valid @RequestBody PostDTO dto, HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
-        return R.ok(postService.create(userId, dto));
+        try {
+            return R.ok(postService.create(userId, dto));
+        } catch (RuntimeException e) {
+            return R.fail(e.getMessage());
+        }
     }
 
     @GetMapping("/list")
