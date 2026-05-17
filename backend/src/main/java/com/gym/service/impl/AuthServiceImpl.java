@@ -48,6 +48,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         LoginVO vo = new LoginVO();
+        vo.setId(user.getId());
         vo.setToken(jwtUtils.generateToken(user.getId(), user.getUsername(), user.getRole()));
         vo.setRefreshToken(jwtUtils.generateRefreshToken(user.getId()));
         vo.setUsername(user.getUsername());

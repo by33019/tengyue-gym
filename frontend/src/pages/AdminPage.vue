@@ -52,11 +52,12 @@
         <div v-for="u in userList" :key="u.id" class="user-card">
           <div class="user-info">
             <span class="user-name">{{ u.username }}</span>
-            <span class="user-meta">{{ ['学员','教练','管理员'][u.role] }} · {{ u.fitnessGoal || '无目标' }} · 教练ID: {{ u.coachId || '无' }}</span>
+            <span class="user-meta">{{ ['学员','教练','管理员'][u.role] }} · {{ u.fitnessGoal || '无目标' }} · {{ u.coachName ? '教练: ' + u.coachName : '无教练' }}</span>
           </div>
-          <button :class="['toggle-btn', u.status ? '' : 'disabled']" @click="toggleUser(u)">
+          <button v-if="u.id !== currentUserId" :class="['toggle-btn', u.status ? '' : 'disabled']" @click="toggleUser(u)">
             {{ u.status ? '禁用' : '启用' }}
           </button>
+          <span v-else class="tag-green">当前账号</span>
         </div>
       </div>
     </div>
@@ -100,11 +101,11 @@ import request from '@/api/request'
 
 const userStore = useUserStore()
 const userRole = computed(() => userStore.userInfo?.role ?? 0)
+const currentUserId = computed(() => userStore.userInfo?.id || 0)
 const roleText = computed(() => ['普通用户', '督导', '管理员'][userRole.value] || '')
 
 const coachTabs = [
   { key: 'users', label: '学员管理' },
-  { key: 'posts', label: '内容审核' },
   { key: 'alerts', label: '提醒记录' },
 ]
 const adminTabs = [
@@ -146,12 +147,16 @@ async function loadCurrentTab() {
   }
 }
 
+async function refreshDash() {
+  try { const r = await request.get('/admin/dashboard'); if (r.data.code===200) dash.value = r.data.data } catch {}
+}
+
 async function assignStudent(u: any) {
-  try { const r = await request.put(`/admin/assign-student/${u.id}`); if (r.data.code===200) { unassignedStudents.value = unassignedStudents.value.filter(s => s.id !== u.id); loadCurrentTab() } } catch {}
+  try { const r = await request.put(`/admin/assign-student/${u.id}`); if (r.data.code===200) { unassignedStudents.value = unassignedStudents.value.filter(s => s.id !== u.id); loadCurrentTab(); refreshDash() } } catch {}
 }
 
 async function unassign(u: any) {
-  try { const r = await request.put(`/admin/unassign-student/${u.id}`); if (r.data.code===200) { myStudents.value = myStudents.value.filter(s => s.id !== u.id); loadCurrentTab() } } catch {}
+  try { const r = await request.put(`/admin/unassign-student/${u.id}`); if (r.data.code===200) { myStudents.value = myStudents.value.filter(s => s.id !== u.id); loadCurrentTab(); refreshDash() } } catch {}
 }
 
 async function remindOne(u: any) {

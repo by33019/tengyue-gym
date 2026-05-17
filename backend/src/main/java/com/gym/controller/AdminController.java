@@ -74,6 +74,10 @@ public class AdminController {
             m.put("fitnessLevel", u.getFitnessLevel());
             m.put("status", u.getStatus());
             m.put("coachId", u.getCoachId());
+            if (u.getCoachId() != null) {
+                User coach = userMapper.selectById(u.getCoachId());
+                m.put("coachName", coach != null ? coach.getUsername() : "未知");
+            }
             m.put("createdAt", u.getCreatedAt());
             return m;
         }).collect(Collectors.toList());
