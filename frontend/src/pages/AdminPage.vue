@@ -63,23 +63,6 @@
       </div>
     </div>
 
-    <!-- Tab: 内容审核 -->
-    <div v-if="activeTab === 'posts'">
-      <div v-if="postList.length === 0" class="empty">暂无动态</div>
-      <div v-for="p in postList" :key="p.id" :class="['user-card', { deleted: p.status === 0 }]">
-        <div class="user-info">
-          <span class="user-name">{{ p.username }}</span>
-          <span class="user-meta">{{ p.content }}</span>
-        </div>
-        <div class="user-stats">
-          <span class="user-stat">👍 {{ p.likeCount }} 💬 {{ p.commentCount }}</span>
-          <span v-if="p.status === 0" class="tag-red">已删除</span>
-        </div>
-        <button v-if="p.status !== 0 && userRole >= 2" class="remind-btn" @click="deletePost(p)">删除</button>
-        <span v-if="p.status !== 0 && userRole < 2" class="tag-green">正常</span>
-      </div>
-    </div>
-
     <!-- Tab: 提醒记录 -->
     <div v-if="activeTab === 'alerts'">
       <div v-if="alertList.length === 0" class="empty">暂无记录</div>
@@ -118,7 +101,6 @@ const tabs = computed(() => userRole.value >= 2 ? adminTabs : coachTabs)
 const activeTab = ref('users')
 const dash = ref<any>({})
 const userList = ref<any[]>([])
-const postList = ref<any[]>([])
 const alertList = ref<any[]>([])
 const myStudents = ref<any[]>([])
 const unassignedStudents = ref<any[]>([])
@@ -144,9 +126,6 @@ async function loadCurrentTab() {
     if (userRole.value >= 2) {
       try { const r = await request.get('/admin/users?page=1&size=100'); if (r.data.code===200) userList.value = r.data.data.records } catch {}
     }
-  }
-  if (activeTab.value === 'posts') {
-    try { const r = await request.get('/admin/posts?page=1&size=50'); if (r.data.code===200) postList.value = r.data.data.records } catch {}
   }
   if (activeTab.value === 'alerts') {
     try { const r = await request.get('/admin/alerts?page=1&size=50'); if (r.data.code===200) alertList.value = r.data.data.records } catch {}

@@ -77,7 +77,7 @@ const coachItems = [
 
 const adminItems = [
   { path: '/admin', icon: '🏠', label: '管理台' },
-  { path: '/admin?tab=posts', icon: '📝', label: '内容审核' },
+  { path: '/audit', icon: '📝', label: '内容审核' },
   { path: '/profile', icon: '👤', label: '个人中心' },
 ]
 

@@ -24,7 +24,8 @@ const router = createRouter({
         { path: 'community', name: 'Community', component: () => import('@/pages/CommunityPage.vue') },
         { path: 'ai', name: 'Ai', component: () => import('@/pages/AiPage.vue') },
         { path: 'profile', name: 'Profile', component: () => import('@/pages/ProfilePage.vue') },
-        { path: 'admin', name: 'Admin', component: () => import('@/pages/AdminPage.vue') }
+        { path: 'admin', name: 'Admin', component: () => import('@/pages/AdminPage.vue') },
+        { path: 'audit', name: 'Audit', component: () => import('@/pages/ContentAuditPage.vue') }
       ]
     }
   ]
@@ -50,8 +51,8 @@ router.beforeEach((to, _from, next) => {
   // AI 仅学员和教练
   if (to.path.startsWith('/ai') && role === 2) return next('/admin')
 
-  // Admin 仅教练和管理员
-  if (to.path.startsWith('/admin') && role === 0) return next('/')
+  // Admin/Audit 仅教练和管理员
+  if ((to.path.startsWith('/admin') || to.path.startsWith('/audit')) && role === 0) return next('/')
 
   next()
 })
