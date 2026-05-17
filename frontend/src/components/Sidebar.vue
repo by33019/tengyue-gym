@@ -22,7 +22,10 @@
 
     <!-- 用户区 -->
     <div class="user-area">
-      <div class="user-avatar">{{ username.charAt(0) }}</div>
+      <div class="user-avatar">
+        <img v-if="avatarUrl" :src="avatarUrl" class="avatar-img" />
+        <span v-else>{{ username.charAt(0) }}</span>
+      </div>
       <div class="user-info">
         <span class="user-name">{{ username }}</span>
         <span class="user-role">{{ roleText }}</span>
@@ -48,6 +51,7 @@ const router = useRouter()
 const userStore = useUserStore()
 
 const username = computed(() => userStore.userInfo?.username || '用户')
+const avatarUrl = computed(() => userStore.userInfo?.avatar || '')
 const role = computed(() => userStore.userInfo?.role ?? 0)
 
 const roleText = computed(() => ['普通用户', '健身督导', '管理员'][role.value] || '')
@@ -91,14 +95,21 @@ function logout() {
 }
 
 .logo-area {
-  @apply flex items-center gap-2 px-5 py-6;
+  @apply flex items-center gap-2.5 px-5 py-6;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
-.logo-icon { font-size: 28px; }
+.logo-icon {
+  font-size: 26px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
 .logo-text {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 20px;
+  line-height: 1;
   letter-spacing: 0.08em;
+  padding-top: 2px;
   background: linear-gradient(135deg, #FF3B5C, #FF8C00);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -134,9 +145,12 @@ function logout() {
   border: 1px solid rgba(255, 255, 255, 0.04);
 }
 .user-avatar {
-  @apply w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0;
+  @apply w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0 overflow-hidden;
   background: linear-gradient(135deg, #FF3B5C, #FF8C00);
   color: #fff;
+}
+.avatar-img {
+  @apply w-full h-full object-cover;
 }
 .user-info {
   @apply flex-1 min-w-0;
