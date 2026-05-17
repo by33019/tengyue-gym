@@ -117,7 +117,7 @@ const pwdSaving = ref(false)
 const pwdMsg = ref('')
 const pwdMsgType = ref('msg-success')
 
-const editForm = reactive({ height: null as number | null, weight: null as number | null, fitnessGoal: '增肌', fitnessLevel: '入门' })
+const editForm = reactive({ height: undefined as number | undefined, weight: undefined as number | undefined, fitnessGoal: '增肌', fitnessLevel: '入门' })
 const pwdForm = reactive({ oldPassword: '', newPassword: '' })
 
 const goals = ['减脂', '增肌', '塑形', '保持健康']
