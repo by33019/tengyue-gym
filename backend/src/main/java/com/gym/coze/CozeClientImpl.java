@@ -52,7 +52,7 @@ public class CozeClientImpl implements CozeClient {
             body.put("content", content);
             body.put("type", "query");
             body.put("session_id", sessionId != null ? sessionId : "");
-            body.put("project_id", cozeConfig.getProjectId());
+            body.put("project_id", Long.parseLong(cozeConfig.getProjectId()));
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
