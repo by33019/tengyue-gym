@@ -6,6 +6,7 @@
       <div class="post-box">
         <textarea v-model="newPost" class="post-input" placeholder="分享你的健身动态..." rows="2"></textarea>
         <button class="post-btn" @click="publish" :disabled="!newPost.trim()">发布</button>
+        <p v-if="postError" class="error-msg">{{ postError }}</p>
       </div>
 
       <!-- 动态流 -->
@@ -51,7 +52,7 @@
 import { ref, onMounted } from 'vue'
 import { postApi, commentApi } from '@/api/post'
 
-const newPost = ref(''); const posts = ref<any[]>([])
+const newPost = ref(''); const posts = ref<any[]>([]); const postError = ref('')
 const activePost = ref<number | null>(null); const comments = ref<any[]>([])
 const replyTo = ref<number | null>(null); const replyText = ref(''); const commentText = ref('')
 
@@ -61,7 +62,14 @@ async function loadPosts() {
 }
 async function publish() {
   if (!newPost.value.trim()) return
-  try { await postApi.create({ content: newPost.value }); newPost.value = ''; loadPosts() } catch {}
+  postError.value = ''
+  try {
+    await postApi.create({ content: newPost.value })
+    newPost.value = ''
+    loadPosts()
+  } catch (e: any) {
+    postError.value = e?.response?.data?.message || '发布失败，请稍后再试'
+  }
 }
 async function likePost(p: any) {
   try { await postApi.like(p.id); p.likeCount++; } catch {}
@@ -90,6 +98,7 @@ function fmt(t: string) { if (!t) return ''; const d = new Date(t); return `${d.
 .post-input:focus { border-color: rgba(255,107,107,0.3); }
 .post-btn { @apply mt-2 px-6 py-2 rounded-xl text-sm font-semibold transition-all; background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: #fff; border: none; cursor: pointer; }
 .post-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.error-msg { @apply text-xs mt-2; color: #FF6B6B; }
 .post-btn.sm { @apply px-3 py-1.5 text-xs; }
 .empty { @apply text-sm text-center py-12; color: rgba(255,255,255,0.15); }
 .feed-card { @apply p-4 rounded-2xl mb-3; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
