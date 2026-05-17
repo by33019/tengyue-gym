@@ -192,10 +192,19 @@ async function send() {
         if (data.startsWith('{')) {
           try {
             const json = JSON.parse(data)
-            if (json.message) {
-              aiMsg.content += json.message
+            // Coze workflow 返回格式: content.answer
+            const answer = json?.content?.answer
+            if (answer && typeof answer === 'string') {
+              aiMsg.content += answer
+              await nextTick()
+              scrollToBottom()
+            }
+            // done 事件时停止闪烁光标
+            if (json?.finish && json?.type === 'answer') {
+              aiMsg.streaming = false
             }
           } catch {
+            // 非 JSON 纯文本
             aiMsg.content += data
           }
         } else {
