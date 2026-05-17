@@ -57,7 +57,7 @@
           @keydown.enter="send"
           :placeholder="inputPlaceholder"
           :disabled="sending || quota.remaining <= 0"
-          class="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 disabled:opacity-50"
+          class="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 disabled:opacity-50"
         />
         <button
           @click="send"
@@ -137,11 +137,7 @@ async function send() {
   const apiType = callType.value === 'recovery' ? 'chat' : callType.value
 
   abortController = new AbortController()
-  const token = localStorage.getItem('user')
-  let authToken = ''
-  if (token) {
-    try { authToken = JSON.parse(token).token || '' } catch { /* */ }
-  }
+  const authToken = localStorage.getItem('token') || ''
 
   try {
     const response = await fetch(`/api/ai/${apiType}`, {

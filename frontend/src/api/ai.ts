@@ -1,14 +1,7 @@
 const BASE = '/api/ai'
 
 function getToken(): string {
-  const stored = localStorage.getItem('user')
-  if (stored) {
-    try {
-      const parsed = JSON.parse(stored)
-      return parsed.token || ''
-    } catch { /* empty */ }
-  }
-  return ''
+  return localStorage.getItem('token') || ''
 }
 
 export const aiApi = {
