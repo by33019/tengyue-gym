@@ -56,7 +56,7 @@ const role = computed(() => userStore.userInfo?.role ?? 0)
 
 const roleText = computed(() => ['普通用户', '健身督导', '管理员'][role.value] || '')
 
-const baseItems = [
+const userItems = [
   { path: '/', icon: '🏠', label: '首页' },
   { path: '/checkin', icon: '🏃', label: '健身打卡' },
   { path: '/plan', icon: '📋', label: '训练计划' },
@@ -67,11 +67,23 @@ const baseItems = [
   { path: '/profile', icon: '👤', label: '个人中心' },
 ]
 
-const adminItem = { path: '/admin', icon: '⚙️', label: '管理后台' }
+const coachItems = [
+  { path: '/admin', icon: '🏠', label: '工作台' },
+  { path: '/checkin', icon: '🏃', label: '健身打卡' },
+  { path: '/plan', icon: '📋', label: '训练计划' },
+  { path: '/ai', icon: '🤖', label: 'AI 助手' },
+  { path: '/profile', icon: '👤', label: '个人中心' },
+]
+
+const adminItems = [
+  { path: '/admin', icon: '🏠', label: '管理台' },
+  { path: '/profile', icon: '👤', label: '个人中心' },
+]
 
 const items = computed(() => {
-  if (role.value >= 1) return [...baseItems, adminItem]
-  return baseItems
+  if (role.value === 2) return adminItems
+  if (role.value === 1) return coachItems
+  return userItems
 })
 
 function isActive(path: string) {

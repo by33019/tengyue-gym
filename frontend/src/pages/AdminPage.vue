@@ -4,48 +4,64 @@
 
     <!-- 概览卡片 -->
     <div class="summary-grid">
-      <div class="s-card"><span class="s-val">{{ dash.totalUsers }}</span><span class="s-lbl">健身用户</span></div>
-      <div class="s-card"><span class="s-val">{{ dash.todayCheckIns }}</span><span class="s-lbl">今日打卡</span></div>
-      <div class="s-card"><span class="s-val">{{ dash.activePlans }}</span><span class="s-lbl">进行中计划</span></div>
+      <div class="s-card"><span class="s-val">{{ dash.totalUsers || 0 }}</span><span class="s-lbl">{{ userRole >= 2 ? '学员总数' : '我的学员' }}</span></div>
+      <div class="s-card"><span class="s-val">{{ dash.todayCheckIns || 0 }}</span><span class="s-lbl">今日打卡</span></div>
+      <div class="s-card"><span class="s-val">{{ dash.activePlans || 0 }}</span><span class="s-lbl">进行中计划</span></div>
       <div class="s-card"><span class="s-val">{{ dash.anomalyCount || 0 }}</span><span class="s-lbl">异常提醒</span></div>
+      <div v-if="userRole >= 2" class="s-card"><span class="s-val">{{ dash.coachCount || 0 }}</span><span class="s-lbl">教练数</span></div>
     </div>
 
     <!-- Tab 切换 -->
     <div class="tab-row">
-      <button v-for="t in tabs" :key="t.key" :class="['tab-btn', { active: activeTab === t.key }]" @click="activeTab = t.key">
-        {{ t.label }}
-      </button>
+      <button v-for="t in tabs" :key="t.key" :class="['tab-btn', { active: activeTab === t.key }]" @click="activeTab = t.key">{{ t.label }}</button>
     </div>
 
-    <!-- Tab 1: 用户打卡 -->
+    <!-- Tab: 学员管理 / 全部用户 -->
     <div v-if="activeTab === 'users'">
-      <div v-if="!dash.userRates || dash.userRates.length === 0" class="empty">暂无数据</div>
-      <div v-for="u in dash.userRates" :key="u.userId" :class="['user-card', { warn: u.needsRemind }]">
-        <div class="user-info">
-          <span class="user-name">{{ u.username }}</span>
-          <span class="user-meta">{{ u.fitnessGoal || '未设置目标' }} · 连续{{ u.streak }}天</span>
+      <!-- 教练：学员分配 -->
+      <div v-if="userRole === 1">
+        <div class="section-title">我的学员</div>
+        <div v-if="myStudents.length === 0" class="empty">暂无学员，从下方未分配列表中添加</div>
+        <div v-for="u in myStudents" :key="u.id" :class="['user-card', { warn: u.needsRemind }]">
+          <div class="user-info">
+            <span class="user-name">{{ u.username }}</span>
+            <span class="user-meta">{{ u.fitnessGoal || '未设置目标' }} · 连续{{ u.streak }}天</span>
+          </div>
+          <div class="user-stats">
+            <span class="user-stat">打卡{{ u.checkInDays }}天</span>
+            <span :class="u.hasPlan ? 'tag-green' : 'tag-red'">{{ u.hasPlan ? '有计划' : '无计划' }}</span>
+            <button v-if="u.needsRemind" class="remind-btn" @click="remindOne(u)">提醒</button>
+            <button class="toggle-btn" @click="unassign(u)">移除</button>
+          </div>
         </div>
-        <div class="user-stats">
-          <span class="user-stat">打卡{{ u.checkInDays }}天</span>
-          <span :class="u.hasPlan ? 'tag-green' : 'tag-red'">{{ u.hasPlan ? '有计划' : '无计划' }}</span>
+
+        <div class="section-title" v-if="unassignedStudents.length > 0">未分配学员</div>
+        <div v-for="u in unassignedStudents" :key="u.id" class="user-card">
+          <div class="user-info">
+            <span class="user-name">{{ u.username }}</span>
+            <span class="user-meta">{{ u.fitnessGoal || '未设置目标' }} · {{ u.fitnessLevel || '未知等级' }}</span>
+          </div>
+          <button class="remind-btn" @click="assignStudent(u)">收为学员</button>
         </div>
-        <button v-if="u.needsRemind" class="remind-btn" @click="remindOne(u)">提醒</button>
       </div>
 
-      <!-- 管理员：用户列表 -->
-      <div v-if="userRole >= 2" class="section-title">全部用户</div>
-      <div v-if="userRole >= 2" v-for="u in userList" :key="u.id" class="user-card">
-        <div class="user-info">
-          <span class="user-name">{{ u.username }}</span>
-          <span class="user-meta">{{ ['普通','督导','管理员'][u.role] }} · {{ u.fitnessGoal || '无目标' }}</span>
+      <!-- 管理员：全部用户管理 -->
+      <div v-if="userRole >= 2">
+        <div class="section-title">全部用户</div>
+        <div v-if="userList.length === 0" class="empty">暂无用户</div>
+        <div v-for="u in userList" :key="u.id" class="user-card">
+          <div class="user-info">
+            <span class="user-name">{{ u.username }}</span>
+            <span class="user-meta">{{ ['学员','教练','管理员'][u.role] }} · {{ u.fitnessGoal || '无目标' }} · 教练ID: {{ u.coachId || '无' }}</span>
+          </div>
+          <button :class="['toggle-btn', u.status ? '' : 'disabled']" @click="toggleUser(u)">
+            {{ u.status ? '禁用' : '启用' }}
+          </button>
         </div>
-        <button :class="['toggle-btn', u.status ? '' : 'disabled']" @click="toggleUser(u)">
-          {{ u.status ? '禁用' : '启用' }}
-        </button>
       </div>
     </div>
 
-    <!-- Tab 2: 内容审核 -->
+    <!-- Tab: 内容审核 -->
     <div v-if="activeTab === 'posts'">
       <div v-if="postList.length === 0" class="empty">暂无动态</div>
       <div v-for="p in postList" :key="p.id" :class="['user-card', { deleted: p.status === 0 }]">
@@ -54,15 +70,15 @@
           <span class="user-meta">{{ p.content }}</span>
         </div>
         <div class="user-stats">
-          <span class="user-stat">👍 {{ p.likeCount }}</span>
-          <span class="user-stat">💬 {{ p.commentCount }}</span>
+          <span class="user-stat">👍 {{ p.likeCount }} 💬 {{ p.commentCount }}</span>
           <span v-if="p.status === 0" class="tag-red">已删除</span>
         </div>
-        <button v-if="p.status !== 0" class="remind-btn" @click="deletePost(p)">删除</button>
+        <button v-if="p.status !== 0 && userRole >= 2" class="remind-btn" @click="deletePost(p)">删除</button>
+        <span v-if="p.status !== 0 && userRole < 2" class="tag-green">正常</span>
       </div>
     </div>
 
-    <!-- Tab 3: 提醒记录 -->
+    <!-- Tab: 提醒记录 -->
     <div v-if="activeTab === 'alerts'">
       <div v-if="alertList.length === 0" class="empty">暂无记录</div>
       <div v-for="a in alertList" :key="a.id" class="user-card">
@@ -78,7 +94,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useUserStore } from '@/stores/user'
 import request from '@/api/request'
 
@@ -86,16 +102,24 @@ const userStore = useUserStore()
 const userRole = computed(() => userStore.userInfo?.role ?? 0)
 const roleText = computed(() => ['普通用户', '督导', '管理员'][userRole.value] || '')
 
-const tabs = [
-  { key: 'users', label: '用户打卡' },
+const coachTabs = [
+  { key: 'users', label: '学员管理' },
   { key: 'posts', label: '内容审核' },
   { key: 'alerts', label: '提醒记录' },
 ]
+const adminTabs = [
+  { key: 'users', label: '用户管理' },
+  { key: 'posts', label: '内容审核' },
+  { key: 'alerts', label: '提醒记录' },
+]
+const tabs = computed(() => userRole.value >= 2 ? adminTabs : coachTabs)
 const activeTab = ref('users')
 const dash = ref<any>({})
 const userList = ref<any[]>([])
 const postList = ref<any[]>([])
 const alertList = ref<any[]>([])
+const myStudents = ref<any[]>([])
+const unassignedStudents = ref<any[]>([])
 
 watch(activeTab, () => { loadCurrentTab() })
 
@@ -105,8 +129,14 @@ onMounted(async () => {
 })
 
 async function loadCurrentTab() {
-  if (activeTab.value === 'users' && userRole.value >= 2) {
-    try { const r = await request.get('/admin/users?page=1&size=50'); if (r.data.code===200) userList.value = r.data.data.records } catch {}
+  if (activeTab.value === 'users') {
+    if (userRole.value === 1) {
+      try { const r = await request.get('/admin/my-users'); if (r.data.code===200) myStudents.value = r.data.data } catch {}
+      try { const r = await request.get('/admin/unassigned-students'); if (r.data.code===200) unassignedStudents.value = r.data.data } catch {}
+    }
+    if (userRole.value >= 2) {
+      try { const r = await request.get('/admin/users?page=1&size=100'); if (r.data.code===200) userList.value = r.data.data.records } catch {}
+    }
   }
   if (activeTab.value === 'posts') {
     try { const r = await request.get('/admin/posts?page=1&size=50'); if (r.data.code===200) postList.value = r.data.data.records } catch {}
@@ -116,10 +146,17 @@ async function loadCurrentTab() {
   }
 }
 
+async function assignStudent(u: any) {
+  try { const r = await request.put(`/admin/assign-student/${u.id}`); if (r.data.code===200) { unassignedStudents.value = unassignedStudents.value.filter(s => s.id !== u.id); loadCurrentTab() } } catch {}
+}
+
+async function unassign(u: any) {
+  try { const r = await request.put(`/admin/unassign-student/${u.id}`); if (r.data.code===200) { myStudents.value = myStudents.value.filter(s => s.id !== u.id); loadCurrentTab() } } catch {}
+}
+
 async function remindOne(u: any) {
-  await request.post('/admin/remind', { userIds: [u.userId], message: '请记得今日打卡哦！' })
+  await request.post('/admin/remind', { userIds: [u.id], message: '请记得今日打卡哦！' })
   u.needsRemind = false
-  alert(`已向 ${u.username} 发送提醒`)
 }
 
 async function toggleUser(u: any) {
@@ -142,8 +179,7 @@ function formatTime(t: string | null) {
 <style scoped>
 .page-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.05em; color: #fff; margin-bottom: 1.5rem; }
 
-.summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
-@media (max-width: 767px) { .summary-grid { grid-template-columns: repeat(2, 1fr); } }
+.summary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
 .s-card { padding: 1.25rem; border-radius: 1rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
 .s-val { display: block; font-size: 1.75rem; font-family: 'Bebas Neue', sans-serif; color: #FF3B5C; }
 .s-lbl { font-size: 0.75rem; color: rgba(255,255,255,0.3); }
@@ -163,14 +199,13 @@ function formatTime(t: string | null) {
 .user-name { display: block; font-size: 0.875rem; color: #fff; }
 .user-meta { font-size: 0.75rem; color: rgba(255,255,255,0.3); }
 .user-stats { display: flex; align-items: center; gap: 0.5rem; }
-.user-stat { font-size: 0.75rem; color: rgba(255,255,255,0.5); }
 
 .tag-green { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; background: rgba(0,245,160,0.1); color: #00F5A0; }
 .tag-red { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; background: rgba(255,107,107,0.1); color: #FF6B6B; }
+.user-stat { font-size: 0.75rem; color: rgba(255,255,255,0.5); }
 
 .remind-btn { padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.2); color: #FF6B6B; cursor: pointer; }
 .remind-btn:hover { background: rgba(255,107,107,0.2); }
-
 .toggle-btn { padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; cursor: pointer; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
 .toggle-btn.disabled { background: rgba(0,245,160,0.1); border-color: rgba(0,245,160,0.2); color: #00F5A0; }
 .toggle-btn:hover { color: #fff; }

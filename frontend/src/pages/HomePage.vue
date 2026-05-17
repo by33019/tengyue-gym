@@ -51,22 +51,6 @@
       </router-link>
     </div>
 
-    <!-- 管理入口 -->
-    <template v-if="role >= 1">
-      <div class="section-header">
-        <h2 class="section-title">管理</h2>
-      </div>
-      <div class="quick-grid">
-        <router-link to="/admin" class="quick-card admin-accent">
-          <span class="quick-icon">⚙️</span>
-          <div class="quick-info">
-            <span class="quick-label">管理后台</span>
-            <span class="quick-desc">用户管理 · 内容审核</span>
-          </div>
-          <span class="quick-arrow">→</span>
-        </router-link>
-      </div>
-    </template>
   </div>
 </template>
 

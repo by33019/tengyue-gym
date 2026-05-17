@@ -29,15 +29,29 @@ const route = useRoute()
 const userStore = useUserStore()
 const role = computed(() => userStore.userInfo?.role ?? 0)
 
-const baseNav = [
+const userNav = [
   { path: '/', icon: '🏠', label: '首页' },
   { path: '/checkin', icon: '🏃', label: '打卡' },
   { path: '/plan', icon: '📋', label: '计划' },
   { path: '/ai', icon: '🤖', label: 'AI' },
   { path: '/profile', icon: '👤', label: '我的' },
 ]
-const adminNav = { path: '/admin', icon: '⚙️', label: '管理' }
-const navItems = computed(() => role.value >= 1 ? [...baseNav, adminNav] : baseNav)
+const coachNav = [
+  { path: '/admin', icon: '🏠', label: '工作台' },
+  { path: '/checkin', icon: '🏃', label: '打卡' },
+  { path: '/plan', icon: '📋', label: '计划' },
+  { path: '/ai', icon: '🤖', label: 'AI' },
+  { path: '/profile', icon: '👤', label: '我的' },
+]
+const adminNav = [
+  { path: '/admin', icon: '🏠', label: '管理' },
+  { path: '/profile', icon: '👤', label: '我的' },
+]
+const navItems = computed(() => {
+  if (role.value === 2) return adminNav
+  if (role.value === 1) return coachNav
+  return userNav
+})
 
 function isActive(path: string) {
   if (path === '/') return route.path === '/'

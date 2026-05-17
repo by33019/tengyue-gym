@@ -32,11 +32,28 @@ const router = createRouter({
 
 router.beforeEach((to, _from, next) => {
   const userStore = useUserStore()
-  if (to.path !== '/login' && !userStore.token) {
-    next('/login')
-  } else {
-    next()
-  }
+  const role = userStore.userInfo?.role ?? 0
+
+  // 未登录 → 登录页
+  if (to.path !== '/login' && !userStore.token) return next('/login')
+
+  // 已登录访问登录页 → 首页/工作台
+  if (to.path === '/login' && userStore.token) return next(role >= 1 ? '/admin' : '/')
+
+  // 首页分流：教练/管理员 → 工作台
+  if (to.path === '/' && role >= 1) return next('/admin')
+
+  // stats, ranking, community 仅学员
+  if (['/stats', '/ranking', '/community'].some(r => to.path.startsWith(r)) && role !== 0)
+    return next('/')
+
+  // AI 仅学员和教练
+  if (to.path.startsWith('/ai') && role === 2) return next('/admin')
+
+  // Admin 仅教练和管理员
+  if (to.path.startsWith('/admin') && role === 0) return next('/')
+
+  next()
 })
 
 export default router

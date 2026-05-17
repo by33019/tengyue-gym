@@ -149,7 +149,7 @@ async function handleLogin() {
     if (res.code === 200) {
       userStore.setToken(res.data.token, res.data.refreshToken)
       userStore.setUserInfo(res.data)
-      router.push('/')
+      router.push((res.data.role || 0) >= 1 ? '/admin' : '/')
     } else {
       errorMsg.value = res.message
     }
