@@ -111,7 +111,6 @@ const coachTabs = [
 const adminTabs = [
   { key: 'users', label: '用户管理' },
   { key: 'posts', label: '内容审核' },
-  { key: 'alerts', label: '提醒记录' },
 ]
 const tabs = computed(() => userRole.value >= 2 ? adminTabs : coachTabs)
 const activeTab = ref('users')
@@ -152,27 +151,47 @@ async function refreshDash() {
 }
 
 async function assignStudent(u: any) {
-  try { const r = await request.put(`/admin/assign-student/${u.id}`); if (r.data.code===200) { unassignedStudents.value = unassignedStudents.value.filter(s => s.id !== u.id); loadCurrentTab(); refreshDash() } } catch {}
+  try {
+    const r = await request.put(`/admin/assign-student/${u.id}`, {})
+    if (r.data.code === 200) {
+      unassignedStudents.value = unassignedStudents.value.filter(s => s.id !== u.id)
+      loadCurrentTab()
+      refreshDash()
+    }
+  } catch (e: any) { alert('分配失败: ' + (e?.response?.data?.message || e.message)) }
 }
 
 async function unassign(u: any) {
-  try { const r = await request.put(`/admin/unassign-student/${u.id}`); if (r.data.code===200) { myStudents.value = myStudents.value.filter(s => s.id !== u.id); loadCurrentTab(); refreshDash() } } catch {}
+  try {
+    const r = await request.put(`/admin/unassign-student/${u.id}`, {})
+    if (r.data.code === 200) {
+      myStudents.value = myStudents.value.filter(s => s.id !== u.id)
+      unassignedStudents.value.push(u)
+      refreshDash()
+    }
+  } catch (e: any) { alert('移除失败: ' + (e?.response?.data?.message || e.message)) }
 }
 
 async function remindOne(u: any) {
-  await request.post('/admin/remind', { userIds: [u.id], message: '请记得今日打卡哦！' })
-  u.needsRemind = false
+  try {
+    const r = await request.post('/admin/remind', { userIds: [u.id], message: '请记得今日打卡哦！' })
+    if (r.data.code === 200) u.needsRemind = false
+  } catch (e: any) { alert('提醒失败: ' + (e?.response?.data?.message || e.message)) }
 }
 
 async function toggleUser(u: any) {
-  await request.put(`/admin/user/${u.id}/status`)
-  u.status = u.status ? 0 : 1
+  try {
+    const r = await request.put(`/admin/user/${u.id}/status`, {})
+    if (r.data.code === 200) u.status = u.status ? 0 : 1
+  } catch (e: any) { alert('操作失败: ' + (e?.response?.data?.message || e.message)) }
 }
 
 async function deletePost(p: any) {
   if (!confirm('确定删除这条动态吗？')) return
-  await request.delete(`/admin/post/${p.id}`)
-  p.status = 0
+  try {
+    const r = await request.delete(`/admin/post/${p.id}`)
+    if (r.data.code === 200) p.status = 0
+  } catch (e: any) { alert('删除失败: ' + (e?.response?.data?.message || e.message)) }
 }
 
 function formatTime(t: string | null) {
