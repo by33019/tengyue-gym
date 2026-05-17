@@ -34,11 +34,11 @@
           <div class="tab-bar">
             <button
               :class="['tab', { active: activeTab === 'login' }]"
-              @click="activeTab = 'login'"
+              @click="switchTab('login')"
             >登录</button>
             <button
               :class="['tab', { active: activeTab === 'register' }]"
-              @click="activeTab = 'register'"
+              @click="switchTab('register')"
             >注册</button>
           </div>
 
@@ -64,7 +64,7 @@
                 <input v-model="loginForm.password" class="input" type="password" placeholder="输入密码" autocomplete="current-password" />
               </div>
             </div>
-            <p v-if="errorMsg" class="error-text">{{ errorMsg }}</p>
+            <p v-if="loginError" class="error-text">{{ loginError }}</p>
             <button type="submit" class="submit-btn" :disabled="loading">
               <span v-if="loading" class="spinner"></span>
               <span v-else>登 录</span>
@@ -108,7 +108,7 @@
                 >{{ l }}</button>
               </div>
             </div>
-            <p v-if="errorMsg" class="error-text">{{ errorMsg }}</p>
+            <p v-if="registerError" class="error-text">{{ registerError }}</p>
             <button type="submit" class="submit-btn" :disabled="loading">
               <span v-if="loading" class="spinner"></span>
               <span v-else>注 册</span>
@@ -130,7 +130,14 @@ const router = useRouter()
 const userStore = useUserStore()
 const activeTab = ref<'login' | 'register'>('login')
 const loading = ref(false)
-const errorMsg = ref('')
+const loginError = ref('')
+const registerError = ref('')
+
+function switchTab(tab: 'login' | 'register') {
+  activeTab.value = tab
+  loginError.value = ''
+  registerError.value = ''
+}
 
 const loginForm = reactive({ username: '', password: '' })
 const roles = [
@@ -154,34 +161,34 @@ const stats = [
 ]
 
 async function handleLogin() {
-  errorMsg.value = ''
+  loginError.value = ''
+  if (!loginForm.username.trim()) { loginError.value = '请输入用户名'; return }
+  if (!loginForm.password) { loginError.value = '请输入密码'; return }
   loading.value = true
   try {
-    const { data: res } = await request.post('/auth/login', {
-      username: loginForm.username,
-      password: loginForm.password
-    })
+    const { data: res } = await request.post('/auth/login', loginForm)
     if (res.code === 200) {
       userStore.setToken(res.data.token, res.data.refreshToken)
       userStore.setUserInfo(res.data)
       router.push((res.data.role || 0) >= 1 ? '/admin' : '/')
     } else {
-      errorMsg.value = res.message
+      loginError.value = res.message
     }
   } catch {
-    errorMsg.value = '网络错误，请稍后再试'
+    loginError.value = '网络错误，请稍后再试'
   } finally {
     loading.value = false
   }
 }
 
 async function handleRegister() {
-  errorMsg.value = ''
+  registerError.value = ''
+  if (!registerForm.username.trim()) { registerError.value = '请输入用户名'; return }
+  if (!registerForm.password) { registerError.value = '请输入密码'; return }
   loading.value = true
   try {
     const { data: res } = await request.post('/auth/register', registerForm)
     if (res.code === 200) {
-      // 注册成功后自动登录
       const { data: loginRes } = await request.post('/auth/login', {
         username: registerForm.username,
         password: registerForm.password
@@ -192,10 +199,10 @@ async function handleRegister() {
         router.push((loginRes.data.role || 0) >= 1 ? '/admin' : '/')
       }
     } else {
-      errorMsg.value = res.message
+      registerError.value = res.message
     }
   } catch {
-    errorMsg.value = '网络错误，请稍后再试'
+    registerError.value = '网络错误，请稍后再试'
   } finally {
     loading.value = false
   }
