@@ -2,7 +2,7 @@
   <div class="flex flex-col h-[calc(100vh-3.5rem)] max-w-2xl mx-auto">
     <!-- 额度提示 -->
     <div class="px-4 py-2 text-xs text-gray-500 bg-gray-50 dark:bg-gray-800 flex justify-between items-center">
-      <span>今日剩余 <b class="text-emerald-600">{{ quota.remaining }}</b>/{{ quota.dailyLimit }} 次</span>
+      <span>今日剩余 <b class="text-emerald-600">{{ quotaDisplay }}</b> 次</span>
       <button @click="clearChat" class="text-gray-400 hover:text-gray-600">清空对话</button>
     </div>
 
@@ -109,6 +109,11 @@ let abortController: AbortController | null = null
 const inputPlaceholder = computed(() => {
   const fn = functions.find(f => f.type === callType.value)
   return fn ? fn.placeholder : '输入消息...'
+})
+
+const quotaDisplay = computed(() => {
+  if (quota.value.remaining > 999999) return '不限'
+  return `${quota.value.remaining}/${quota.value.dailyLimit}`
 })
 
 function selectFunction(fn: FunctionCard) {

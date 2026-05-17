@@ -50,8 +50,8 @@ public class AiService {
             return emitter;
         }
 
-        // 限额检查
-        if (aiCallLogService.isLimitExceeded(userId)) {
+        // 限额检查（管理员不限次数）
+        if (user.getRole() != 2 && aiCallLogService.isLimitExceeded(userId)) {
             cozeEmitter.send("今日AI调用次数已用完（每日10次），请明天再来。");
             cozeEmitter.complete();
             return emitter;
@@ -124,6 +124,10 @@ public class AiService {
     }
 
     public long getQuota(Long userId) {
+        User user = userMapper.selectById(userId);
+        if (user != null && user.getRole() == 2) {
+            return Long.MAX_VALUE; // 管理员不限次数
+        }
         return aiCallLogService.remainingCalls(userId);
     }
 
