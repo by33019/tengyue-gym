@@ -1,9 +1,9 @@
 <template>
   <div class="page-container">
-    <h1 class="page-title">{{ roleText }}工作台</h1>
+    <h1 class="page-title">{{ activeTab === 'posts' ? '内容审核' : roleText + '工作台' }}</h1>
 
-    <!-- 概览卡片 -->
-    <div class="summary-grid">
+    <!-- 概览卡片（内容审核页不显示） -->
+    <div v-if="activeTab !== 'posts'" class="summary-grid">
       <div class="s-card"><span class="s-val">{{ dash.totalUsers || 0 }}</span><span class="s-lbl">{{ userRole >= 2 ? '学员总数' : '我的学员' }}</span></div>
       <div class="s-card"><span class="s-val">{{ dash.todayCheckIns || 0 }}</span><span class="s-lbl">今日打卡</span></div>
       <div class="s-card"><span class="s-val">{{ dash.activePlans || 0 }}</span><span class="s-lbl">进行中计划</span></div>
