@@ -7,3 +7,44 @@ select option {
   background: #1a1a20;
   color: #fff;
 }
+
+/* ===== 运动风全局变量 ===== */
+:root {
+  --primary: #FF3B5C;
+  --secondary: #00F5A0;
+  --accent: #00D2FF;
+  --bg: #0B0B14;
+  --card: rgba(255, 255, 255, 0.03);
+  --border: rgba(255, 255, 255, 0.06);
+}
+
+/* ===== 页面通用容器 ===== */
+.page-container {
+  padding: 2rem;
+  max-width: 1400px;
+}
+@media (max-width: 767px) {
+  .page-container { padding: 1rem; }
+}
+
+/* ===== 运动风卡片 ===== */
+.sport-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  transition: all 0.2s ease;
+}
+.sport-card:hover {
+  border-color: rgba(255, 59, 92, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== 页面标题 ===== */
+.page-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  letter-spacing: 0.05em;
+  color: #fff;
+  margin-bottom: 1.5rem;
+}
