@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,11 +33,32 @@ public class AdminController {
     private final AlertLogMapper alertLogMapper;
     private final AchievementService achievementService;
 
+    private int getRole(HttpServletRequest request) {
+        Integer role = (Integer) request.getAttribute("role");
+        return role != null ? role : 0;
+    }
+
+    @GetMapping("/coaches")
+    public R<Object> coaches() {
+        List<User> coaches = userMapper.selectList(
+                new LambdaQueryWrapper<User>().eq(User::getRole, 1).eq(User::getStatus, 1));
+        List<Map<String, Object>> list = coaches.stream().map(c -> {
+            Map<String, Object> m = new LinkedHashMap<>();
+            m.put("id", c.getId());
+            m.put("username", c.getUsername());
+            return m;
+        }).collect(Collectors.toList());
+        return R.ok(list);
+    }
+
     @GetMapping("/users")
     public R<Object> userList(@RequestParam(defaultValue = "1") int page,
                               @RequestParam(defaultValue = "10") int size,
                               @RequestParam(required = false) Integer role,
-                              @RequestParam(required = false) Integer status) {
+                              @RequestParam(required = false) Integer status,
+                              HttpServletRequest request) {
+        if (getRole(request) < 2) return R.fail("无权限");
+
         LambdaQueryWrapper<User> qw = new LambdaQueryWrapper<>();
         if (role != null) qw.eq(User::getRole, role);
         if (status != null) qw.eq(User::getStatus, status);
@@ -53,6 +73,7 @@ public class AdminController {
             m.put("fitnessGoal", u.getFitnessGoal());
             m.put("fitnessLevel", u.getFitnessLevel());
             m.put("status", u.getStatus());
+            m.put("coachId", u.getCoachId());
             m.put("createdAt", u.getCreatedAt());
             return m;
         }).collect(Collectors.toList());
@@ -66,7 +87,8 @@ public class AdminController {
     }
 
     @PutMapping("/user/{id}/status")
-    public R<Void> toggleUserStatus(@PathVariable Long id) {
+    public R<Void> toggleUserStatus(@PathVariable Long id, HttpServletRequest request) {
+        if (getRole(request) < 2) return R.fail("无权限");
         User u = userMapper.selectById(id);
         if (u == null) return R.fail("用户不存在");
         u.setStatus(u.getStatus() == 1 ? 0 : 1);
@@ -77,13 +99,17 @@ public class AdminController {
     @GetMapping("/my-users")
     public R<Object> myUsers(HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
-        User current = userMapper.selectById(userId);
-        if (current == null || current.getRole() < 1) return R.fail("无权限");
+        int role = getRole(request);
+        if (role < 1) return R.fail("无权限");
 
-        // 督导查看所有普通用户
-        List<User> users = userMapper.selectList(
-                new LambdaQueryWrapper<User>().eq(User::getRole, 0).orderByDesc(User::getCreatedAt));
+        // 教练只看自己的学员，管理员看全部普通用户
+        LambdaQueryWrapper<User> qw = new LambdaQueryWrapper<User>()
+                .eq(User::getRole, 0).orderByDesc(User::getCreatedAt);
+        if (role == 1) {
+            qw.eq(User::getCoachId, userId);
+        }
 
+        List<User> users = userMapper.selectList(qw);
         List<Map<String, Object>> records = users.stream().map(u -> {
             long checkInDays = checkInMapper.selectCount(
                     new LambdaQueryWrapper<CheckIn>().eq(CheckIn::getUserId, u.getId()));
@@ -106,11 +132,18 @@ public class AdminController {
     @GetMapping("/dashboard")
     public R<Object> dashboard(HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
-        User currentUser = userMapper.selectById(userId);
-        if (currentUser == null || currentUser.getRole() < 1) return R.fail("无权限");
+        int role = getRole(request);
+        if (role < 1) return R.fail("无权限");
 
         List<User> allUsers = userMapper.selectList(null);
         List<CheckIn> allCheckIns = checkInMapper.selectList(null);
+
+        // 教练只看自己学员的数据
+        if (role == 1) {
+            allUsers = allUsers.stream()
+                    .filter(u -> u.getCoachId() != null && u.getCoachId().equals(userId))
+                    .collect(Collectors.toList());
+        }
 
         Map<String, Object> data = new LinkedHashMap<>();
         data.put("totalUsers", (int) allUsers.stream().filter(u -> u.getRole() == 0).count());
@@ -119,12 +152,16 @@ public class AdminController {
         data.put("activePlans", planMapper.selectCount(
                 new LambdaQueryWrapper<Plan>().eq(Plan::getStatus, 1).eq(Plan::getIsTemplate, 0)).intValue());
 
-        // 异常提醒统计
         long anomalyCount = alertLogMapper.selectCount(
                 new LambdaQueryWrapper<AlertLog>().eq(AlertLog::getType, "anomaly"));
         data.put("anomalyCount", (int) anomalyCount);
 
-        // 用户打卡率
+        // 教练数（管理员看）
+        if (role >= 2) {
+            long coachCount = allUsers.stream().filter(u -> u.getRole() == 1).count();
+            data.put("coachCount", (int) coachCount);
+        }
+
         List<Map<String, Object>> userRates = new ArrayList<>();
         for (User u : allUsers) {
             if (u.getRole() != 0) continue;
@@ -150,7 +187,10 @@ public class AdminController {
     @GetMapping("/alerts")
     public R<Object> alerts(@RequestParam(defaultValue = "1") int page,
                              @RequestParam(defaultValue = "20") int size,
-                             @RequestParam(required = false) String type) {
+                             @RequestParam(required = false) String type,
+                             HttpServletRequest request) {
+        if (getRole(request) < 1) return R.fail("无权限");
+
         LambdaQueryWrapper<AlertLog> qw = new LambdaQueryWrapper<>();
         if (type != null) qw.eq(AlertLog::getType, type);
         qw.orderByDesc(AlertLog::getCreatedAt);
@@ -176,7 +216,8 @@ public class AdminController {
 
     @PostMapping("/remind")
     public R<Void> sendRemind(@RequestBody Map<String, Object> body, HttpServletRequest request) {
-        Long senderId = (Long) request.getAttribute("userId");
+        if (getRole(request) < 1) return R.fail("无权限");
+
         @SuppressWarnings("unchecked")
         List<Integer> userIdsRaw = (List<Integer>) body.get("userIds");
         String message = (String) body.getOrDefault("message", "请记得今日打卡哦！");
@@ -196,7 +237,10 @@ public class AdminController {
 
     @GetMapping("/posts")
     public R<Object> posts(@RequestParam(defaultValue = "1") int page,
-                            @RequestParam(defaultValue = "20") int size) {
+                            @RequestParam(defaultValue = "20") int size,
+                            HttpServletRequest request) {
+        if (getRole(request) < 1) return R.fail("无权限");
+
         LambdaQueryWrapper<Post> qw = new LambdaQueryWrapper<>();
         qw.orderByDesc(Post::getCreatedAt);
         List<Post> all = postMapper.selectList(qw);
@@ -222,11 +266,56 @@ public class AdminController {
     }
 
     @DeleteMapping("/post/{id}")
-    public R<Void> deletePost(@PathVariable Long id) {
+    public R<Void> deletePost(@PathVariable Long id, HttpServletRequest request) {
+        if (getRole(request) < 2) return R.fail("无权限");
         Post post = postMapper.selectById(id);
         if (post == null) return R.fail("动态不存在");
-        post.setStatus(0); // 0=违规删除
+        post.setStatus(0);
         postMapper.updateById(post);
+        return R.ok();
+    }
+
+    @GetMapping("/unassigned-students")
+    public R<Object> unassignedStudents(HttpServletRequest request) {
+        if (getRole(request) < 1) return R.fail("无权限");
+        List<User> users = userMapper.selectList(
+                new LambdaQueryWrapper<User>()
+                        .eq(User::getRole, 0).isNull(User::getCoachId)
+                        .eq(User::getStatus, 1).orderByDesc(User::getCreatedAt));
+        List<Map<String, Object>> list = users.stream().map(u -> {
+            Map<String, Object> m = new LinkedHashMap<>();
+            m.put("id", u.getId());
+            m.put("username", u.getUsername());
+            m.put("fitnessGoal", u.getFitnessGoal());
+            m.put("fitnessLevel", u.getFitnessLevel());
+            return m;
+        }).collect(Collectors.toList());
+        return R.ok(list);
+    }
+
+    @PutMapping("/assign-student/{id}")
+    public R<Void> assignStudent(@PathVariable Long id, HttpServletRequest request) {
+        Long coachId = (Long) request.getAttribute("userId");
+        int role = getRole(request);
+        if (role < 1) return R.fail("无权限");
+        if (role == 1) {
+            User coach = userMapper.selectById(coachId);
+            if (coach == null || coach.getRole() != 1) return R.fail("仅教练可分配学员");
+        }
+        User student = userMapper.selectById(id);
+        if (student == null || student.getRole() != 0) return R.fail("只能分配学员账号");
+        student.setCoachId(coachId);
+        userMapper.updateById(student);
+        return R.ok();
+    }
+
+    @PutMapping("/unassign-student/{id}")
+    public R<Void> unassignStudent(@PathVariable Long id, HttpServletRequest request) {
+        if (getRole(request) < 1) return R.fail("无权限");
+        User student = userMapper.selectById(id);
+        if (student == null) return R.fail("用户不存在");
+        student.setCoachId(null);
+        userMapper.updateById(student);
         return R.ok();
     }
 }
