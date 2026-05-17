@@ -19,7 +19,8 @@ public class CozeSseEmitterImpl implements CozeSseEmitter {
     public void send(String data) {
         if (completed) return;
         try {
-            emitter.send(SseEmitter.event().name("chunk").data(data));
+            // 使用 SseEmitter.event().data() 直接发送，不指定 event name 减少开销
+            emitter.send(SseEmitter.event().data(data));
         } catch (IOException e) {
             log.warn("SSE send failed, client may have disconnected", e);
             completed = true;
@@ -31,7 +32,7 @@ public class CozeSseEmitterImpl implements CozeSseEmitter {
         if (completed) return;
         completed = true;
         try {
-            emitter.send(SseEmitter.event().name("done").data(""));
+            emitter.send(SseEmitter.event().data("[DONE]"));
             emitter.complete();
         } catch (IOException e) {
             log.warn("SSE complete send failed", e);

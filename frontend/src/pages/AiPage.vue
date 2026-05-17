@@ -196,23 +196,21 @@ async function send() {
             const answer = json?.content?.answer
             if (answer && typeof answer === 'string') {
               aiMsg.content += answer
-              await nextTick()
+              await new Promise(r => setTimeout(r, 15))
               scrollToBottom()
             }
-            // done 事件时停止闪烁光标
-            if (json?.finish && json?.type === 'answer') {
+            // [DONE] 或 finish=true 时停止闪烁光标
+            if (data === '[DONE]' || (json?.finish && json?.type === 'answer')) {
               aiMsg.streaming = false
             }
           } catch {
-            // 非 JSON 纯文本
             aiMsg.content += data
           }
+        } else if (data === '[DONE]') {
+          aiMsg.streaming = false
         } else {
           aiMsg.content += data
         }
-
-        await nextTick()
-        scrollToBottom()
       }
     }
 
