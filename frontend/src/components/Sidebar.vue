@@ -77,6 +77,7 @@ const coachItems = [
 
 const adminItems = [
   { path: '/admin', icon: '🏠', label: '管理台' },
+  { path: '/admin?tab=posts', icon: '📝', label: '内容审核' },
   { path: '/profile', icon: '👤', label: '个人中心' },
 ]
 
@@ -88,7 +89,13 @@ const items = computed(() => {
 
 function isActive(path: string) {
   if (path === '/') return route.path === '/'
-  return route.path.startsWith(path)
+  if (path.includes('?')) {
+    const [base, qs] = path.split('?')
+    const params = new URLSearchParams(qs)
+    const tab = params.get('tab')
+    return route.path.startsWith(base) && route.query.tab === tab
+  }
+  return route.path.startsWith(path) && !route.query.tab
 }
 
 function logout() {

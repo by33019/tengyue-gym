@@ -9,6 +9,7 @@ public class RegisterDTO {
     private String username;
     @NotBlank(message = "密码不能为空")
     private String password;
+    private Integer role;
     private String fitnessGoal;
     private String fitnessLevel;
 }

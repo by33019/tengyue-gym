@@ -32,7 +32,9 @@ public class AuthServiceImpl implements AuthService {
         User user = new User();
         user.setUsername(dto.getUsername());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setRole(0);
+        int role = dto.getRole() != null ? dto.getRole() : 0;
+        if (role != 0 && role != 1) throw new RuntimeException("角色仅限普通用户或教练");
+        user.setRole(role);
         user.setStatus(1);
         user.setFitnessGoal(dto.getFitnessGoal());
         user.setFitnessLevel(dto.getFitnessLevel());

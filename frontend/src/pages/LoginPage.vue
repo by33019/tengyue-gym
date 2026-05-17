@@ -82,6 +82,15 @@
               <input v-model="registerForm.password" class="input simple" type="password" placeholder="输入密码" />
             </div>
             <div class="input-group">
+              <label class="input-label">注册身份</label>
+              <div class="chip-row">
+                <button type="button" v-for="r in roles" :key="r.value"
+                  :class="['chip', { on: registerForm.role === r.value }]"
+                  @click="registerForm.role = r.value"
+                >{{ r.label }}</button>
+              </div>
+            </div>
+            <div class="input-group">
               <label class="input-label">健身目标</label>
               <div class="chip-row">
                 <button type="button" v-for="g in goals" :key="g"
@@ -124,7 +133,13 @@ const loading = ref(false)
 const errorMsg = ref('')
 
 const loginForm = reactive({ username: '', password: '' })
+const roles = [
+  { value: 0, label: '普通用户' },
+  { value: 1, label: '教练' },
+]
+
 const registerForm = reactive({
+  role: 0,
   username: '', password: '',
   fitnessGoal: '增肌', fitnessLevel: '入门'
 })
