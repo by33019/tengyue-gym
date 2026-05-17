@@ -16,6 +16,7 @@ CREATE TABLE `user` (
     fitness_goal VARCHAR(50) DEFAULT NULL COMMENT '健身目标: 减脂/增肌/塑形/保持健康',
     fitness_level VARCHAR(20) DEFAULT NULL COMMENT '运动等级: 入门/进阶/高级',
     status TINYINT NOT NULL DEFAULT 1 COMMENT '0=禁用, 1=正常',
+    is_anonymous TINYINT NOT NULL DEFAULT 0 COMMENT '0=实名, 1=匿名',
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     is_deleted TINYINT NOT NULL DEFAULT 0 COMMENT '逻辑删除',
@@ -51,6 +52,7 @@ CREATE TABLE `plan` (
     end_date DATE NOT NULL,
     status TINYINT NOT NULL DEFAULT 1 COMMENT '0=停用, 1=启用',
     source VARCHAR(20) NOT NULL DEFAULT '手动' COMMENT '来源: AI/手动/模板',
+    is_template TINYINT NOT NULL DEFAULT 0 COMMENT '0=个人计划, 1=公共模板',
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     is_deleted TINYINT NOT NULL DEFAULT 0,
@@ -131,3 +133,16 @@ CREATE TABLE `ai_call_log` (
     INDEX idx_user_created (user_id, created_at),
     INDEX idx_session_id (session_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='AI调用日志表';
+
+-- 提醒/异常记录表
+CREATE TABLE `alert_log` (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    type VARCHAR(20) NOT NULL COMMENT '类型: remind=提醒, anomaly=异常',
+    message VARCHAR(500) DEFAULT NULL COMMENT '提醒内容',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    is_deleted TINYINT NOT NULL DEFAULT 0,
+    INDEX idx_user_id (user_id),
+    INDEX idx_type_created (type, created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='提醒/异常记录表';
