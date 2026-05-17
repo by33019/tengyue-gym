@@ -34,21 +34,39 @@ public class CozeClientImpl implements CozeClient {
         RestTemplate restTemplate = createRestTemplate();
 
         try {
-            Map<String, Object> msg = new LinkedHashMap<>();
-            msg.put("role", "user");
-            msg.put("content", prompt);
-            msg.put("content_type", "text");
+            // Build request body in Coze Workflow format
+            Map<String, Object> textContent = new LinkedHashMap<>();
+            textContent.put("text", prompt);
+
+            Map<String, Object> promptItem = new LinkedHashMap<>();
+            promptItem.put("type", "text");
+            promptItem.put("content", textContent);
+
+            Map<String, Object> query = new LinkedHashMap<>();
+            query.put("prompt", List.of(promptItem));
+
+            Map<String, Object> content = new LinkedHashMap<>();
+            content.put("query", query);
 
             Map<String, Object> body = new LinkedHashMap<>();
-            body.put("stream", true);
-            body.put("auto_save_history", true);
-            body.put("additional_messages", List.of(msg));
+            body.put("content", content);
+            body.put("type", "query");
+            body.put("session_id", sessionId != null ? sessionId : "");
+            body.put("project_id", cozeConfig.getProjectId());
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Accept", "text/event-stream");
+            headers.setBearerAuth(cozeConfig.getApiToken());
+
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
 
             restTemplate.execute(
                     cozeConfig.getApiUrl(),
                     HttpMethod.POST,
                     request -> {
                         request.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+                        request.getHeaders().set("Accept", "text/event-stream");
                         request.getHeaders().setBearerAuth(cozeConfig.getApiToken());
                         request.getBody().write(objectMapper.writeValueAsBytes(body));
                     },
@@ -61,22 +79,21 @@ public class CozeClientImpl implements CozeClient {
                                     String json = line.substring(5).trim();
                                     try {
                                         JsonNode node = objectMapper.readTree(json);
-                                        // Coze response: content.answer contains the text
-                                        JsonNode content = node.get("content");
-                                        if (content != null && content.has("answer")) {
-                                            JsonNode answer = content.get("answer");
+                                        JsonNode contentNode = node.get("content");
+                                        if (contentNode != null && contentNode.has("answer")) {
+                                            JsonNode answer = contentNode.get("answer");
                                             if (answer != null && !answer.isNull()) {
                                                 emitter.send(answer.asText());
                                             }
                                         }
-                                        // Check finish flag
+                                        // Finish when answer is complete
                                         if (node.has("finish") && node.get("finish").asBoolean()
                                                 && "answer".equals(node.path("type").asText())) {
                                             emitter.complete();
                                             return null;
                                         }
                                     } catch (Exception e) {
-                                        // skip malformed JSON lines
+                                        // skip malformed JSON
                                     }
                                 }
                             }
