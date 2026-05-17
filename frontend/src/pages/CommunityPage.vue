@@ -64,9 +64,13 @@ async function publish() {
   if (!newPost.value.trim()) return
   postError.value = ''
   try {
-    await postApi.create({ content: newPost.value })
-    newPost.value = ''
-    loadPosts()
+    const { data: res } = await postApi.create({ content: newPost.value })
+    if (res.code === 200) {
+      newPost.value = ''
+      loadPosts()
+    } else {
+      postError.value = res.message || '发布失败'
+    }
   } catch (e: any) {
     postError.value = e?.response?.data?.message || '发布失败，请稍后再试'
   }
