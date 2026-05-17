@@ -194,6 +194,33 @@ public class AdminController {
         return R.ok();
     }
 
+    @GetMapping("/posts")
+    public R<Object> posts(@RequestParam(defaultValue = "1") int page,
+                            @RequestParam(defaultValue = "20") int size) {
+        LambdaQueryWrapper<Post> qw = new LambdaQueryWrapper<>();
+        qw.orderByDesc(Post::getCreatedAt);
+        List<Post> all = postMapper.selectList(qw);
+
+        List<Map<String, Object>> records = all.stream().skip((long) (page - 1) * size).limit(size).map(p -> {
+            User u = userMapper.selectById(p.getUserId());
+            Map<String, Object> m = new LinkedHashMap<>();
+            m.put("id", p.getId());
+            m.put("userId", p.getUserId());
+            m.put("username", u != null ? u.getUsername() : "未知");
+            m.put("content", p.getContent().length() > 100 ? p.getContent().substring(0, 100) + "..." : p.getContent());
+            m.put("likeCount", p.getLikeCount());
+            m.put("commentCount", p.getCommentCount());
+            m.put("status", p.getStatus());
+            m.put("createdAt", p.getCreatedAt());
+            return m;
+        }).collect(Collectors.toList());
+
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("records", records);
+        result.put("total", all.size());
+        return R.ok(result);
+    }
+
     @DeleteMapping("/post/{id}")
     public R<Void> deletePost(@PathVariable Long id) {
         Post post = postMapper.selectById(id);
