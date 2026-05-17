@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-[calc(100vh-3.5rem)] max-w-2xl mx-auto">
+  <div class="flex flex-col h-[calc(100vh-3.5rem)] max-w-4xl mx-auto">
     <!-- 额度提示 -->
     <div class="px-4 py-2 text-xs text-gray-500 bg-gray-50 dark:bg-gray-800 flex justify-between items-center">
       <span>今日剩余 <b class="text-emerald-600">{{ quotaDisplay }}</b> 次</span>

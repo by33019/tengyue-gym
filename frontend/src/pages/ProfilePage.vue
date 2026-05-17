@@ -3,7 +3,7 @@
     <!-- 顶部渐变条 -->
     <div class="top-accent"></div>
 
-    <div class="max-w-2xl mx-auto px-4 py-8 relative z-10">
+    <div class="page-container relative z-10">
       <!-- 头像 & 基础信息 -->
       <div class="hero-card">
         <div class="avatar-wrap" @click="triggerUpload" title="点击更换头像">

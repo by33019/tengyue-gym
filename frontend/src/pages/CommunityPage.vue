@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <div class="max-w-lg mx-auto px-4 py-6">
+    <div class="page-container">
       <h1 class="page-title">社区</h1>
       <!-- 发帖 -->
       <div class="post-box">

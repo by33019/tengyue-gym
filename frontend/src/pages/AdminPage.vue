@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <div class="max-w-lg mx-auto px-4 py-6">
+    <div class="page-container">
       <h1 class="page-title">{{ roleText }}工作台</h1>
 
       <!-- 概览 -->

@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <div class="max-w-lg mx-auto px-4 py-6">
+    <div class="page-container">
       <h1 class="page-title">排行榜</h1>
       <div class="tab-row">
         <button :class="['tab', { on: tab === 'days' }]" @click="tab='days';load()">打卡天数</button>
