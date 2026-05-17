@@ -57,6 +57,9 @@ const baseItems = [
   { path: '/checkin', icon: '🏃', label: '健身打卡' },
   { path: '/plan', icon: '📋', label: '训练计划' },
   { path: '/ai', icon: '🤖', label: 'AI 助手' },
+  { path: '/stats', icon: '📊', label: '数据统计' },
+  { path: '/ranking', icon: '🏆', label: '排行榜' },
+  { path: '/community', icon: '💬', label: '社区' },
   { path: '/profile', icon: '👤', label: '个人中心' },
 ]
 
