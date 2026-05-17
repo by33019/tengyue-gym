@@ -147,7 +147,6 @@ gym-checkin/
 - 响应：SSE (`data:{JSON}`)
 - 后端组件：CozeClient、CozeConfig、CozeSseEmitter、ContextBuilder
 
-
 ## 请根据 doc/requirements.md 完成项目脚手架搭建：
 1. 提取技术栈（若无则推荐并确认）
 2. 初始化项目结构、安装依赖、创建目录、入口文件、脚本配置
