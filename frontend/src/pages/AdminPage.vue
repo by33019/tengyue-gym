@@ -57,6 +57,7 @@
           <button v-if="u.id !== currentUserId" :class="['toggle-btn', u.status ? '' : 'disabled']" @click="toggleUser(u)">
             {{ u.status ? '禁用' : '启用' }}
           </button>
+          <button v-if="u.id !== currentUserId" class="remind-btn" @click="deleteUser(u)">删除</button>
           <span v-else class="tag-green">当前账号</span>
         </div>
       </div>
@@ -190,6 +191,14 @@ async function toggleUser(u: any) {
     const r = await request.put(`/admin/user/${u.id}/status`, {})
     if (r.data.code === 200) u.status = u.status ? 0 : 1
   } catch (e: any) { alert('操作失败: ' + (e?.response?.data?.message || e.message)) }
+}
+
+async function deleteUser(u: any) {
+  if (!confirm(`确定要永久删除用户 "${u.username}" 吗？此操作不可恢复！`)) return
+  try {
+    const r = await request.delete(`/admin/user/${u.id}`)
+    if (r.data.code === 200) { userList.value = userList.value.filter(x => x.id !== u.id); refreshDash() }
+  } catch (e: any) { alert('删除失败: ' + (e?.response?.data?.message || e.message)) }
 }
 
 async function deletePost(p: any) {

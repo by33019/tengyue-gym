@@ -101,6 +101,17 @@ public class AdminController {
         return R.ok();
     }
 
+    @DeleteMapping("/user/{id}")
+    public R<Void> deleteUser(@PathVariable Long id, HttpServletRequest request) {
+        if (getRole(request) < 2) return R.fail("无权限");
+        Long currentUserId = (Long) request.getAttribute("userId");
+        if (id.equals(currentUserId)) return R.fail("不能删除自己");
+        User u = userMapper.selectById(id);
+        if (u == null) return R.fail("用户不存在");
+        userMapper.deleteById(id);
+        return R.ok();
+    }
+
     @GetMapping("/my-users")
     public R<Object> myUsers(HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");

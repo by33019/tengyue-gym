@@ -181,9 +181,16 @@ async function handleRegister() {
   try {
     const { data: res } = await request.post('/auth/register', registerForm)
     if (res.code === 200) {
-      activeTab.value = 'login'
-      loginForm.username = registerForm.username
-      errorMsg.value = ''
+      // 注册成功后自动登录
+      const { data: loginRes } = await request.post('/auth/login', {
+        username: registerForm.username,
+        password: registerForm.password
+      })
+      if (loginRes.code === 200) {
+        userStore.setToken(loginRes.data.token, loginRes.data.refreshToken)
+        userStore.setUserInfo(loginRes.data)
+        router.push((loginRes.data.role || 0) >= 1 ? '/admin' : '/')
+      }
     } else {
       errorMsg.value = res.message
     }
