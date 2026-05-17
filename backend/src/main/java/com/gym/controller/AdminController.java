@@ -1,6 +1,7 @@
 package com.gym.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.gym.common.R;
 import com.gym.entity.AlertLog;
 import com.gym.entity.CheckIn;
@@ -316,10 +317,10 @@ public class AdminController {
     @PutMapping("/unassign-student/{id}")
     public R<Void> unassignStudent(@PathVariable Long id, HttpServletRequest request) {
         if (getRole(request) < 1) return R.fail("无权限");
-        User student = userMapper.selectById(id);
-        if (student == null) return R.fail("用户不存在");
-        student.setCoachId(null);
-        userMapper.updateById(student);
+        userMapper.update(null,
+                new LambdaUpdateWrapper<User>()
+                        .eq(User::getId, id)
+                        .set(User::getCoachId, null));
         return R.ok();
     }
 }
