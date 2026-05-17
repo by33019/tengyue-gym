@@ -214,6 +214,7 @@ async function onFileChange(e: Event) {
     const { data: res } = await userApi.uploadAvatar(file)
     if (res.code === 200) {
       profile.value.avatar = res.data
+      userStore.userInfo.avatar = res.data
       avatarMsg.value = '头像更新成功'
     } else {
       avatarMsg.value = res.message || '上传失败'

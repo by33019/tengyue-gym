@@ -8,4 +8,5 @@ public class LoginVO {
     private String refreshToken;
     private String username;
     private Integer role;
+    private String avatar;
 }

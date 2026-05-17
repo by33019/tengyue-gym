@@ -52,6 +52,7 @@ public class AuthServiceImpl implements AuthService {
         vo.setRefreshToken(jwtUtils.generateRefreshToken(user.getId()));
         vo.setUsername(user.getUsername());
         vo.setRole(user.getRole());
+        vo.setAvatar(user.getAvatar());
         return vo;
     }
 
