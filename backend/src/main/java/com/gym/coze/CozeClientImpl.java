@@ -12,8 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -35,11 +34,15 @@ public class CozeClientImpl implements CozeClient {
         RestTemplate restTemplate = createRestTemplate();
 
         try {
-            Map<String, Object> body = new HashMap<>();
-            body.put("project_id", cozeConfig.getProjectId());
-            body.put("session_id", sessionId != null ? sessionId : "");
-            body.put("prompt", prompt);
+            Map<String, Object> msg = new LinkedHashMap<>();
+            msg.put("role", "user");
+            msg.put("content", prompt);
+            msg.put("content_type", "text");
+
+            Map<String, Object> body = new LinkedHashMap<>();
             body.put("stream", true);
+            body.put("auto_save_history", true);
+            body.put("additional_messages", List.of(msg));
 
             restTemplate.execute(
                     cozeConfig.getApiUrl(),
@@ -56,25 +59,24 @@ public class CozeClientImpl implements CozeClient {
                             while ((line = reader.readLine()) != null && !emitter.isCompleted()) {
                                 if (line.startsWith("data:")) {
                                     String json = line.substring(5).trim();
-                                    if ("[DONE]".equals(json)) {
-                                        emitter.complete();
-                                        return null;
-                                    }
                                     try {
                                         JsonNode node = objectMapper.readTree(json);
-                                        if (node.has("content")) {
-                                            emitter.send(node.get("content").asText());
-                                        } else if (node.has("answer")) {
-                                            emitter.send(node.get("answer").asText());
-                                        } else if (node.has("delta")) {
-                                            emitter.send(node.get("delta").asText());
-                                        } else if (node.has("message")) {
-                                            emitter.send(node.get("message").asText());
-                                        } else {
-                                            emitter.send(json);
+                                        // Coze response: content.answer contains the text
+                                        JsonNode content = node.get("content");
+                                        if (content != null && content.has("answer")) {
+                                            JsonNode answer = content.get("answer");
+                                            if (answer != null && !answer.isNull()) {
+                                                emitter.send(answer.asText());
+                                            }
+                                        }
+                                        // Check finish flag
+                                        if (node.has("finish") && node.get("finish").asBoolean()
+                                                && "answer".equals(node.path("type").asText())) {
+                                            emitter.complete();
+                                            return null;
                                         }
                                     } catch (Exception e) {
-                                        emitter.send(json);
+                                        // skip malformed JSON lines
                                     }
                                 }
                             }
