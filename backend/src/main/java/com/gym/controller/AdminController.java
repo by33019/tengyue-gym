@@ -63,7 +63,7 @@ public class AdminController {
         LambdaQueryWrapper<User> qw = new LambdaQueryWrapper<>();
         if (role != null) qw.eq(User::getRole, role);
         if (status != null) qw.eq(User::getStatus, status);
-        qw.orderByDesc(User::getCreatedAt);
+        qw.orderByDesc(User::getId);
 
         List<User> users = userMapper.selectList(qw);
         List<Map<String, Object>> records = users.stream().skip((long) (page - 1) * size).limit(size).map(u -> {
@@ -258,7 +258,7 @@ public class AdminController {
         if (getRole(request) < 1) return R.fail("无权限");
 
         LambdaQueryWrapper<Post> qw = new LambdaQueryWrapper<>();
-        qw.orderByDesc(Post::getCreatedAt);
+        qw.ne(Post::getStatus, 0).orderByDesc(Post::getCreatedAt);
         List<Post> all = postMapper.selectList(qw);
 
         List<Map<String, Object>> records = all.stream().skip((long) (page - 1) * size).limit(size).map(p -> {
@@ -310,11 +310,19 @@ public class AdminController {
     }
 
     @PutMapping("/assign-student/{id}")
-    public R<Void> assignStudent(@PathVariable Long id, HttpServletRequest request) {
+    public R<Void> assignStudent(@PathVariable Long id,
+                                  @RequestBody(required = false) Map<String, Object> body,
+                                  HttpServletRequest request) {
         Long coachId = (Long) request.getAttribute("userId");
         int role = getRole(request);
         if (role < 1) return R.fail("无权限");
-        if (role == 1) {
+
+        // 管理员可以为学员指定任意教练
+        if (role >= 2 && body != null && body.get("coachId") != null) {
+            coachId = Long.valueOf(body.get("coachId").toString());
+            User targetCoach = userMapper.selectById(coachId);
+            if (targetCoach == null || targetCoach.getRole() != 1) return R.fail("目标用户不是教练");
+        } else if (role == 1) {
             User coach = userMapper.selectById(coachId);
             if (coach == null || coach.getRole() != 1) return R.fail("仅教练可分配学员");
         }

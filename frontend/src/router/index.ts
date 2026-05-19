@@ -25,7 +25,13 @@ const router = createRouter({
         { path: 'ai', name: 'Ai', component: () => import('@/pages/AiPage.vue') },
         { path: 'profile', name: 'Profile', component: () => import('@/pages/ProfilePage.vue') },
         { path: 'admin', name: 'Admin', component: () => import('@/pages/AdminPage.vue') },
-        { path: 'audit', name: 'Audit', component: () => import('@/pages/ContentAuditPage.vue') }
+        { path: 'audit', name: 'Audit', component: () => import('@/pages/ContentAuditPage.vue') },
+        { path: 'coach/students', name: 'CoachStudents', component: () => import('@/pages/CoachStudentsPage.vue') },
+        { path: 'coach/templates', name: 'CoachTemplates', component: () => import('@/pages/CoachTemplatesPage.vue') },
+        { path: 'coach/alerts', name: 'CoachAlerts', component: () => import('@/pages/CoachAlertsPage.vue') },
+        { path: 'admin/users', name: 'AdminUsers', component: () => import('@/pages/AdminUsersPage.vue') },
+        { path: 'admin/coaches', name: 'AdminCoaches', component: () => import('@/pages/AdminCoachesPage.vue') },
+        { path: 'admin/analytics', name: 'AdminAnalytics', component: () => import('@/pages/AdminAnalyticsPage.vue') }
       ]
     }
   ]
@@ -53,6 +59,13 @@ router.beforeEach((to, _from, next) => {
 
   // Admin/Audit 仅教练和管理员
   if ((to.path.startsWith('/admin') || to.path.startsWith('/audit')) && role === 0) return next('/')
+
+  // coach 专属路由仅教练/管理员
+  if (to.path.startsWith('/coach') && role < 1) return next('/')
+
+  // admin 子路由仅管理员
+  if (['/admin/users', '/admin/coaches', '/admin/analytics'].some(r => to.path.startsWith(r)) && role < 2)
+    return next('/admin')
 
   next()
 })

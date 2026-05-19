@@ -69,15 +69,21 @@ const userItems = [
 
 const coachItems = [
   { path: '/admin', icon: '🏠', label: '工作台' },
+  { path: '/coach/students', icon: '👥', label: '学员管理' },
   { path: '/checkin', icon: '🏃', label: '健身打卡' },
   { path: '/plan', icon: '📋', label: '训练计划' },
+  { path: '/coach/templates', icon: '📌', label: '模板管理' },
+  { path: '/coach/alerts', icon: '🔔', label: '提醒日志' },
   { path: '/ai', icon: '🤖', label: 'AI 助手' },
   { path: '/profile', icon: '👤', label: '个人中心' },
 ]
 
 const adminItems = [
   { path: '/admin', icon: '🏠', label: '管理台' },
+  { path: '/admin/users', icon: '👥', label: '用户管理' },
+  { path: '/admin/coaches', icon: '👨‍🏫', label: '教练管理' },
   { path: '/audit', icon: '📝', label: '内容审核' },
+  { path: '/admin/analytics', icon: '📊', label: '数据看板' },
   { path: '/profile', icon: '👤', label: '个人中心' },
 ]
 
@@ -89,6 +95,7 @@ const items = computed(() => {
 
 function isActive(path: string) {
   if (path === '/') return route.path === '/'
+  if (path === '/admin') return route.path === '/admin'
   if (path.includes('?')) {
     const [base, qs] = path.split('?')
     const params = new URLSearchParams(qs)

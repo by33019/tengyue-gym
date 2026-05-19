@@ -3,17 +3,16 @@
     <h1 class="page-title">内容审核</h1>
 
     <div v-if="postList.length === 0" class="empty">暂无动态</div>
-    <div v-for="p in postList" :key="p.id" :class="['user-card', { deleted: p.status === 0 }]">
+    <div v-for="p in postList" :key="p.id" class="user-card">
       <div class="user-info">
         <span class="user-name">{{ p.username }}</span>
         <span class="user-meta">{{ p.content }}</span>
       </div>
       <div class="user-stats">
         <span class="user-stat">👍 {{ p.likeCount }} 💬 {{ p.commentCount }}</span>
-        <span v-if="p.status === 0" class="tag-red">已删除</span>
       </div>
-      <button v-if="p.status !== 0 && userRole >= 2" class="remind-btn" @click="deletePost(p)">删除</button>
-      <span v-if="p.status !== 0 && userRole < 2" class="tag-green">正常</span>
+      <button v-if="userRole >= 2" class="remind-btn" @click="deletePost(p)">删除</button>
+      <span v-else class="tag-green">正常</span>
     </div>
   </div>
 </template>
@@ -35,7 +34,7 @@ async function deletePost(p: any) {
   if (!confirm('确定删除这条动态吗？')) return
   try {
     const r = await request.delete(`/admin/post/${p.id}`)
-    if (r.data.code === 200) p.status = 0
+    if (r.data.code === 200) postList.value = postList.value.filter(item => item.id !== p.id)
   } catch (e: any) { alert('删除失败: ' + (e?.response?.data?.message || e.message)) }
 }
 </script>
@@ -44,7 +43,6 @@ async function deletePost(p: any) {
 .page-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.05em; color: #fff; margin-bottom: 1.5rem; }
 .empty { font-size: 0.875rem; text-align: center; padding: 3rem 0; color: rgba(255,255,255,0.15); }
 .user-card { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; padding: 1rem; border-radius: 0.75rem; margin-bottom: 0.5rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
-.user-card.deleted { opacity: 0.5; }
 .user-info { flex: 1; min-width: 150px; }
 .user-name { display: block; font-size: 0.875rem; color: #fff; }
 .user-meta { font-size: 0.75rem; color: rgba(255,255,255,0.3); }

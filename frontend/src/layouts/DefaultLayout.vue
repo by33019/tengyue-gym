@@ -38,6 +38,7 @@ const userNav = [
 ]
 const coachNav = [
   { path: '/admin', icon: '🏠', label: '工作台' },
+  { path: '/coach/students', icon: '👥', label: '学员' },
   { path: '/checkin', icon: '🏃', label: '打卡' },
   { path: '/plan', icon: '📋', label: '计划' },
   { path: '/ai', icon: '🤖', label: 'AI' },
@@ -45,6 +46,9 @@ const coachNav = [
 ]
 const adminNav = [
   { path: '/admin', icon: '🏠', label: '管理' },
+  { path: '/admin/users', icon: '👥', label: '用户' },
+  { path: '/audit', icon: '📝', label: '审核' },
+  { path: '/admin/analytics', icon: '📊', label: '数据' },
   { path: '/profile', icon: '👤', label: '我的' },
 ]
 const navItems = computed(() => {
