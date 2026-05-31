@@ -63,7 +63,7 @@ public class AdminController {
         LambdaQueryWrapper<User> qw = new LambdaQueryWrapper<>();
         if (role != null) qw.eq(User::getRole, role);
         if (status != null) qw.eq(User::getStatus, status);
-        qw.orderByDesc(User::getId);
+        qw.orderByAsc(User::getId);
 
         List<User> users = userMapper.selectList(qw);
         List<Map<String, Object>> records = users.stream().skip((long) (page - 1) * size).limit(size).map(u -> {
@@ -205,10 +205,27 @@ public class AdminController {
                              @RequestParam(defaultValue = "20") int size,
                              @RequestParam(required = false) String type,
                              HttpServletRequest request) {
-        if (getRole(request) < 1) return R.fail("无权限");
+        int role = getRole(request);
+        if (role < 1) return R.fail("无权限");
 
         LambdaQueryWrapper<AlertLog> qw = new LambdaQueryWrapper<>();
         if (type != null) qw.eq(AlertLog::getType, type);
+
+        // 教练只能看自己学员的提醒日志
+        if (role == 1) {
+            Long coachId = (Long) request.getAttribute("userId");
+            List<Long> studentIds = userMapper.selectList(
+                    new LambdaQueryWrapper<User>().eq(User::getCoachId, coachId).eq(User::getRole, 0))
+                    .stream().map(User::getId).collect(Collectors.toList());
+            if (studentIds.isEmpty()) {
+                Map<String, Object> result = new LinkedHashMap<>();
+                result.put("records", List.of());
+                result.put("total", 0);
+                return R.ok(result);
+            }
+            qw.in(AlertLog::getUserId, studentIds);
+        }
+
         qw.orderByDesc(AlertLog::getCreatedAt);
 
         List<AlertLog> logs = alertLogMapper.selectList(qw);
@@ -232,7 +249,9 @@ public class AdminController {
 
     @PostMapping("/remind")
     public R<Void> sendRemind(@RequestBody Map<String, Object> body, HttpServletRequest request) {
-        if (getRole(request) < 1) return R.fail("无权限");
+        int role = getRole(request);
+        if (role < 1) return R.fail("无权限");
+        Long coachId = (Long) request.getAttribute("userId");
 
         @SuppressWarnings("unchecked")
         List<Integer> userIdsRaw = (List<Integer>) body.get("userIds");
@@ -240,6 +259,16 @@ public class AdminController {
 
         if (userIdsRaw == null || userIdsRaw.isEmpty()) return R.fail("请选择要提醒的用户");
         if (message.length() > 200) return R.fail("提醒内容不能超过200字");
+
+        // 教练只能提醒自己的学员
+        if (role == 1) {
+            List<Long> myStudentIds = userMapper.selectList(
+                    new LambdaQueryWrapper<User>().eq(User::getCoachId, coachId).eq(User::getRole, 0))
+                    .stream().map(User::getId).collect(Collectors.toList());
+            for (Integer uid : userIdsRaw) {
+                if (!myStudentIds.contains(uid.longValue())) return R.fail("只能提醒自己的学员");
+            }
+        }
 
         for (Integer uid : userIdsRaw) {
             AlertLog log = new AlertLog();
@@ -317,12 +346,13 @@ public class AdminController {
         int role = getRole(request);
         if (role < 1) return R.fail("无权限");
 
-        // 管理员可以为学员指定任意教练
-        if (role >= 2 && body != null && body.get("coachId") != null) {
+        // 管理员必须指定目标教练，管理员自身不负责带学员
+        if (role >= 2) {
+            if (body == null || body.get("coachId") == null) return R.fail("请选择目标教练");
             coachId = Long.valueOf(body.get("coachId").toString());
             User targetCoach = userMapper.selectById(coachId);
             if (targetCoach == null || targetCoach.getRole() != 1) return R.fail("目标用户不是教练");
-        } else if (role == 1) {
+        } else {
             User coach = userMapper.selectById(coachId);
             if (coach == null || coach.getRole() != 1) return R.fail("仅教练可分配学员");
         }

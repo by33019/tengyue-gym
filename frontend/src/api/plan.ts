@@ -13,5 +13,6 @@ export const planApi = {
   },
   publishTemplate(id: number) { return request.put(`/plan/${id}/publish`) },
   unpublishTemplate(id: number) { return request.put(`/plan/${id}/unpublish`) },
+  deletePlan(id: number) { return request.delete(`/plan/${id}`) },
   applyTemplate(id: number) { return request.post(`/plan/${id}/apply`) }
 }

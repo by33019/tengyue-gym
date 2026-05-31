@@ -87,13 +87,13 @@ function renderChart(data: any) {
     xAxis: {
       type: 'category',
       data: dates,
-      axisLabel: { color: 'rgba(255,255,255,0.3)', fontSize: 11 },
-      axisLine: { lineStyle: { color: 'rgba(255,255,255,0.06)' } },
+      axisLabel: { color: '#888', fontSize: 11 },
+      axisLine: { lineStyle: { color: '#333' } },
     },
     yAxis: {
       type: 'value',
-      axisLabel: { color: 'rgba(255,255,255,0.3)', fontSize: 11 },
-      splitLine: { lineStyle: { color: 'rgba(255,255,255,0.04)' } },
+      axisLabel: { color: '#888', fontSize: 11 },
+      splitLine: { lineStyle: { color: '#e0e0e0' } },
     },
     series: [{
       data: values,
@@ -112,32 +112,32 @@ function renderChart(data: any) {
 </script>
 
 <style scoped>
-.page-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.05em; color: #fff; margin-bottom: 1.5rem; }
+.page-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.05em; color: var(--text); margin-bottom: 1.5rem; }
 
 .summary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-.s-card { padding: 1.25rem; border-radius: 1rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
+.s-card { padding: 1.25rem; border-radius: 1rem; background: var(--card); border: 1px solid var(--border); }
 .s-val { display: block; font-size: 1.75rem; font-family: 'Bebas Neue', sans-serif; color: #FF3B5C; }
-.s-lbl { font-size: 0.75rem; color: rgba(255,255,255,0.3); }
+.s-lbl { font-size: 0.75rem; color: var(--text-secondary); }
 
 .section-wrap { margin-bottom: 2rem; }
-.section-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; color: rgba(255,255,255,0.2); }
+.section-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; color: var(--text-muted); }
 
-.empty { font-size: 0.875rem; text-align: center; padding: 2rem 0; color: rgba(255,255,255,0.15); }
+.empty { font-size: 0.875rem; text-align: center; padding: 2rem 0; color: var(--text-muted); }
 
 .rank-list { display: flex; flex-direction: column; gap: 0.5rem; }
-.rank-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0.75rem; border-radius: 0.5rem; background: rgba(255,255,255,0.01); }
-.rank-num { width: 24px; text-align: center; font-size: 0.875rem; font-weight: 600; color: rgba(255,255,255,0.2); }
+.rank-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0.75rem; border-radius: 0.5rem; background: var(--card); }
+.rank-num { width: 24px; text-align: center; font-size: 0.875rem; font-weight: 600; color: var(--text-muted); }
 .rank-1 { color: #FFD700; }
 .rank-2 { color: #C0C0C0; }
 .rank-3 { color: #CD7F32; }
-.rank-name { width: 80px; font-size: 0.875rem; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.rank-bar-wrap { flex: 1; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.04); overflow: hidden; }
+.rank-name { width: 80px; font-size: 0.875rem; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rank-bar-wrap { flex: 1; height: 6px; border-radius: 3px; background: var(--card); overflow: hidden; }
 .rank-bar { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #FF3B5C, #FF8C00); transition: width 0.5s; }
-.rank-pct { width: 48px; text-align: right; font-size: 0.75rem; color: rgba(255,255,255,0.4); }
+.rank-pct { width: 48px; text-align: right; font-size: 0.75rem; color: var(--text-secondary); }
 
 .period-switch { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
-.period-btn { padding: 0.4rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); color: rgba(255,255,255,0.4); cursor: pointer; transition: all 0.2s; }
-.period-btn:hover { color: rgba(255,255,255,0.7); }
+.period-btn { padding: 0.4rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; background: var(--card); border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; }
+.period-btn:hover { color: var(--text-secondary); }
 .period-btn.active { background: rgba(255,59,92,0.15); border-color: transparent; color: #FF3B5C; font-weight: 600; }
 
 .chart-box { width: 100%; height: 320px; }

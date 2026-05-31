@@ -70,17 +70,17 @@ watch(period, drawChart)
 </script>
 
 <style scoped>
-.page { @apply min-h-screen; background: #0a0a0f; font-family: 'Noto Sans SC', sans-serif; }
-.page-title { font-family: 'Bebas Neue', sans-serif; @apply text-3xl tracking-wider mb-4; color: #fff; }
+.page { @apply min-h-screen; background: var(--bg); font-family: 'Noto Sans SC', sans-serif; }
+.page-title { font-family: 'Bebas Neue', sans-serif; @apply text-3xl tracking-wider mb-4; color: var(--text); }
 .tab-row { @apply flex gap-2 mb-4; }
-.tab { @apply px-4 py-2 rounded-lg text-sm; background: rgba(255,255,255,0.03); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: all 0.2s; }
+.tab { @apply px-4 py-2 rounded-lg text-sm; background: var(--card); color: var(--text-secondary); border: 1px solid var(--border); cursor: pointer; transition: all 0.2s; }
 .tab.on { background: rgba(255,107,107,0.1); border-color: rgba(255,107,107,0.3); color: #FF6B6B; }
 .summary-grid { @apply grid grid-cols-2 gap-3 mb-4; }
-.s-card { @apply p-4 rounded-xl; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
+.s-card { @apply p-4 rounded-xl; background: var(--card); border: 1px solid var(--border); }
 .s-val { @apply block text-2xl; font-family: 'Bebas Neue', sans-serif; color: #FF6B6B; }
-.s-lbl { @apply text-xs; color: rgba(255,255,255,0.3); }
-.chart-card { @apply rounded-2xl p-4 mb-4; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
+.s-lbl { @apply text-xs; color: var(--text-secondary); }
+.chart-card { @apply rounded-2xl p-4 mb-4; background: var(--card); border: 1px solid var(--border); }
 .chart-box { width: 100%; height: 200px; }
 .chart-pie { height: 250px; }
-.section-title { @apply text-xs uppercase tracking-wider mb-3; color: rgba(255,255,255,0.2); }
+.section-title { @apply text-xs uppercase tracking-wider mb-3; color: var(--text-muted); }
 </style>

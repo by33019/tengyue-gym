@@ -2,13 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 全局下拉框暗色主题 */
+/* 全局下拉框主题适配 */
 select option {
-  background: #1a1a20;
-  color: #fff;
+  background: var(--card);
+  color: var(--text);
 }
 
-/* ===== 运动风全局变量 ===== */
+/* ===== 运动风全局变量（暗色主题默认） ===== */
 :root {
   --primary: #FF3B5C;
   --secondary: #00F5A0;
@@ -16,6 +16,282 @@ select option {
   --bg: #0B0B14;
   --card: rgba(255, 255, 255, 0.03);
   --border: rgba(255, 255, 255, 0.06);
+  --text: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.3);
+  --sidebar-bg: linear-gradient(180deg, #0F0F1A 0%, #0B0B14 100%);
+  --nav-bg: rgba(15, 15, 20, 0.85);
+  --hover-bg: rgba(255, 255, 255, 0.03);
+  --active-bg: linear-gradient(135deg, rgba(255, 59, 92, 0.15), rgba(255, 140, 0, 0.1));
+}
+
+/* ===== 浅色主题变量 ===== */
+[data-theme="light"] {
+  --bg: #F0F2F5;
+  --card: #FFFFFF;
+  --border: rgba(0, 0, 0, 0.08);
+  --text: #1A1A1A;
+  --text-secondary: rgba(0, 0, 0, 0.65);
+  --text-muted: rgba(0, 0, 0, 0.4);
+  --sidebar-bg: linear-gradient(180deg, #FAFAF8 0%, #F0F2F5 100%);
+  --nav-bg: rgba(255, 255, 255, 0.92);
+  --hover-bg: rgba(0, 0, 0, 0.04);
+  --active-bg: linear-gradient(135deg, rgba(255, 59, 92, 0.08), rgba(255, 140, 0, 0.06));
+}
+
+/* ===================================================================
+   浅色主题全局覆盖规则 (!important 强制覆盖 Vue scoped + Tailwind)
+   品牌色不受影响: #FF3B5C #FF6B6B #FF8C00 #00F5A0 #00D2FF #FF8E53 #A78BFA
+   =================================================================== */
+
+/* --- Tailwind text-white 全系列覆盖 --- */
+[data-theme="light"] .text-white,
+[data-theme="light"] .text-white\/10,
+[data-theme="light"] .text-white\/20,
+[data-theme="light"] .text-white\/30,
+[data-theme="light"] .text-white\/40,
+[data-theme="light"] .text-white\/50,
+[data-theme="light"] .text-white\/60,
+[data-theme="light"] .text-white\/70,
+[data-theme="light"] .text-white\/80,
+[data-theme="light"] .text-white\/90 {
+  color: #1A1A1A !important;
+}
+
+/* --- 所有输入类元素 --- */
+[data-theme="light"] input:not([type="checkbox"]):not([type="radio"]),
+[data-theme="light"] textarea,
+[data-theme="light"] select {
+  background: #FFFFFF !important;
+  color: #1A1A1A !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
+}
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+  color: rgba(0, 0, 0, 0.35) !important;
+}
+[data-theme="light"] select option {
+  background: #FFFFFF !important;
+  color: #1A1A1A !important;
+}
+
+/* --- 页面背景 --- */
+[data-theme="light"] .page,
+[data-theme="light"] [class*="page-container"],
+[data-theme="light"] .app-shell {
+  background: #F0F2F5 !important;
+}
+
+/* --- 模态框/筛选/搜索容器 --- */
+[data-theme="light"] .modal-box,
+[data-theme="light"] .modal-select,
+[data-theme="light"] .filter-select,
+[data-theme="light"] .filter-search,
+[data-theme="light"] .search-input,
+[data-theme="light"] .reply-input,
+[data-theme="light"] .post-input,
+[data-theme="light"] .modal-textarea,
+[data-theme="light"] .form-input {
+  background: #FFFFFF !important;
+  color: #1A1A1A !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+/* ====== 浅色主题：所有文字强制深色（超全 class 覆盖） ====== */
+[data-theme="light"] .page-title,
+[data-theme="light"] .section-title,
+[data-theme="light"] .section-header h2,
+[data-theme="light"] .quick-label,
+[data-theme="light"] .quick-desc,
+[data-theme="light"] .user-name,
+[data-theme="light"] .user-info,
+[data-theme="light"] .user-role,
+[data-theme="light"] .user-meta,
+[data-theme="light"] .user-stat,
+[data-theme="light"] .modal-title,
+[data-theme="light"] .info-val,
+[data-theme="light"] .card-name,
+[data-theme="light"] .card-meta,
+[data-theme="light"] .card-stat,
+[data-theme="light"] .card-footer,
+[data-theme="light"] .tpl-name,
+[data-theme="light"] .plan-name,
+[data-theme="light"] .rank-name,
+[data-theme="light"] .rank-val,
+[data-theme="light"] .coach-name,
+[data-theme="light"] .coach-meta,
+[data-theme="light"] .student-name,
+[data-theme="light"] .student-meta,
+[data-theme="light"] .alert-user,
+[data-theme="light"] .td-name,
+[data-theme="light"] .feed-user,
+[data-theme="light"] .cmt-user,
+[data-theme="light"] .record-type,
+[data-theme="light"] .record-dur,
+[data-theme="light"] .ex-name,
+[data-theme="light"] .ex-info,
+[data-theme="light"] .day-name,
+[data-theme="light"] .achi-text,
+[data-theme="light"] .s-val,
+[data-theme="light"] .s-lbl,
+[data-theme="light"] .expand-icon,
+[data-theme="light"] .nav-link-label,
+[data-theme="light"] .data-value,
+[data-theme="light"] .data-label,
+[data-theme="light"] .data-item,
+[data-theme="light"] .form-label,
+[data-theme="light"] .input-label,
+[data-theme="light"] .edit-btn,
+[data-theme="light"] .filter-bar,
+[data-theme="light"] .tab-row button,
+[data-theme="light"] .tab-btn,
+[data-theme="light"] .period-btn,
+[data-theme="light"] .back-btn,
+[data-theme="light"] .no-achi,
+[data-theme="light"] .empty,
+[data-theme="light"] .empty-small,
+[data-theme="light"] .anon-label,
+[data-theme="light"] .switch-link {
+  color: #1A1A1A !important;
+}
+
+/* --- 表格全面覆盖 --- */
+[data-theme="light"] table,
+[data-theme="light"] thead,
+[data-theme="light"] tbody,
+[data-theme="light"] tr,
+[data-theme="light"] th,
+[data-theme="light"] td {
+  color: #1A1A1A !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* --- 灰色层次文字（半透明→灰） --- */
+[data-theme="light"] .user-role,
+[data-theme="light"] .coach-meta,
+[data-theme="light"] .student-meta,
+[data-theme="light"] .s-lbl,
+[data-theme="light"] .expand-icon,
+[data-theme="light"] .no-achi,
+[data-theme="light"] .empty,
+[data-theme="light"] .empty-small,
+[data-theme="light"] .quick-desc,
+[data-theme="light"] .data-label,
+[data-theme="light"] .form-label,
+[data-theme="light"] .input-label,
+[data-theme="light"] .card-meta,
+[data-theme="light"] .card-stat,
+[data-theme="light"] .user-stat,
+[data-theme="light"] .user-meta,
+[data-theme="light"] .tab-row button:not(.active) {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* --- 卡片/容器背景 --- */
+[data-theme="light"] .s-card,
+[data-theme="light"] .coach-card,
+[data-theme="light"] .student-row,
+[data-theme="light"] .sport-card,
+[data-theme="light"] .data-card,
+[data-theme="light"] .edit-card,
+[data-theme="light"] .user-card {
+  background: #FFFFFF !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* --- 编辑/操作按钮 --- */
+[data-theme="light"] .edit-btn,
+[data-theme="light"] .back-btn,
+[data-theme="light"] .refresh-btn {
+  color: rgba(0, 0, 0, 0.6) !important;
+  background: rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+[data-theme="light"] .edit-btn:hover,
+[data-theme="light"] .back-btn:hover,
+[data-theme="light"] .refresh-btn:hover,
+[data-theme="light"] .toggle-btn:hover {
+  color: #1A1A1A !important;
+}
+
+/* --- 导航 --- */
+[data-theme="light"] .nav-link { color: rgba(0, 0, 0, 0.5) !important; }
+[data-theme="light"] .nav-link:hover { color: rgba(0, 0, 0, 0.75) !important; background: rgba(0, 0, 0, 0.04) !important; }
+[data-theme="light"] .nav-link.active { color: #1A1A1A !important; }
+
+/* --- 分页 --- */
+[data-theme="light"] .pager,
+[data-theme="light"] .pager button,
+[data-theme="light"] .pager span,
+[data-theme="light"] .page-info {
+  color: #1A1A1A !important;
+}
+[data-theme="light"] .pager button:hover:not(:disabled) {
+  color: #FF3B5C !important;
+}
+
+/* --- tab/filter-chip 非激活 --- */
+[data-theme="light"] .tab:not(.on):not(.active),
+[data-theme="light"] .filter-chip:not(.active),
+[data-theme="light"] .tab-btn:not(.active),
+[data-theme="light"] .period-btn:not(.active) {
+  color: rgba(0, 0, 0, 0.5) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+/* --- 日历 --- */
+[data-theme="light"] .date-cell,
+[data-theme="light"] .date-cell.has-data {
+  color: #1A1A1A !important;
+}
+
+/* --- 社区动态用户名字保持品牌色 --- */
+[data-theme="light"] .feed-user,
+[data-theme="light"] .cmt-user {
+  color: #FF3B5C !important;
+}
+
+/* ====== 登录页面始终暗色（不受主题影响） ====== */
+[data-theme="light"] .login-page {
+  background: #0a0a0f !important;
+}
+[data-theme="light"] .login-page .brand-tagline {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+[data-theme="light"] .login-page .stat-label {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+[data-theme="light"] .login-page .input-label {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+[data-theme="light"] .login-page .input {
+  background: rgba(255, 255, 255, 0.04) !important;
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+[data-theme="light"] .login-page .form-title {
+  color: #fff !important;
+}
+[data-theme="light"] .login-page .switch-link {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+[data-theme="light"] .login-page .captcha-loading {
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+[data-theme="light"] .login-page .input-icon {
+  color: rgba(255, 255, 255, 0.2) !important;
+}
+[data-theme="light"] .login-page .form-card {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+[data-theme="light"] .login-page .chip {
+  background: rgba(255, 255, 255, 0.03) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+[data-theme="light"] .login-page .grid-pattern {
+  opacity: 0.03 !important;
 }
 
 /* ===== 页面通用容器 ===== */
@@ -45,6 +321,18 @@ select option {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 2rem;
   letter-spacing: 0.05em;
-  color: #fff;
+  color: var(--text);
   margin-bottom: 1.5rem;
+}
+
+/* ===== 全局 body 主题适配 ===== */
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ===== 浅色主题下全局下拉框修正 ===== */
+[data-theme="light"] select option {
+  background: #fff;
+  color: #1A1A1A;
 }

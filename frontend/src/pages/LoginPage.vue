@@ -30,17 +30,8 @@
       <!-- 表单区域 -->
       <div class="form-section">
         <div class="form-card">
-          <!-- Tab 切换 -->
-          <div class="tab-bar">
-            <button
-              :class="['tab', { active: activeTab === 'login' }]"
-              @click="switchTab('login')"
-            >登录</button>
-            <button
-              :class="['tab', { active: activeTab === 'register' }]"
-              @click="switchTab('register')"
-            >注册</button>
-          </div>
+          <!-- 表单标题 -->
+          <h2 class="form-title">{{ activeTab === 'login' ? '登录' : '注册' }}</h2>
 
           <!-- 登录表单 -->
           <form v-if="activeTab === 'login'" @submit.prevent="handleLogin" class="form-body">
@@ -64,11 +55,22 @@
                 <input v-model="loginForm.password" class="input" type="password" placeholder="输入密码" autocomplete="current-password" />
               </div>
             </div>
+            <div class="input-group">
+              <label class="input-label">验证码</label>
+              <div class="captcha-row">
+                <input v-model="loginForm.captchaCode" class="input simple captcha-input" placeholder="输入验证码" maxlength="4" autocomplete="off" />
+                <button type="button" class="captcha-box" @click="refreshCaptcha" :disabled="loading">
+                  <span v-if="captchaCode" class="captcha-text">{{ captchaCode }}</span>
+                  <span v-else class="captcha-loading">加载中...</span>
+                </button>
+              </div>
+            </div>
             <p v-if="loginError" class="error-text">{{ loginError }}</p>
             <button type="submit" class="submit-btn" :disabled="loading">
               <span v-if="loading" class="spinner"></span>
               <span v-else>登 录</span>
             </button>
+            <p class="switch-link">还没有账号？<a href="#" @click.prevent="switchTab('register')">立即注册</a></p>
           </form>
 
           <!-- 注册表单 -->
@@ -113,6 +115,7 @@
               <span v-if="loading" class="spinner"></span>
               <span v-else>注 册</span>
             </button>
+            <p class="switch-link">已有账号？<a href="#" @click.prevent="switchTab('login')">立即登录</a></p>
           </form>
         </div>
       </div>
@@ -121,7 +124,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import request from '@/api/request'
@@ -137,9 +140,24 @@ function switchTab(tab: 'login' | 'register') {
   activeTab.value = tab
   loginError.value = ''
   registerError.value = ''
+  if (tab === 'login') refreshCaptcha()
 }
 
-const loginForm = reactive({ username: '', password: '' })
+const loginForm = reactive({ username: '', password: '', captchaKey: '', captchaCode: '' })
+const captchaCode = ref('')
+
+onMounted(() => { refreshCaptcha() })
+
+async function refreshCaptcha() {
+  try {
+    const { data: res } = await request.get('/auth/captcha')
+    if (res.code === 200) {
+      loginForm.captchaKey = res.data.captchaKey
+      captchaCode.value = res.data.captchaCode
+    }
+  } catch { /* ignore */ }
+}
+
 const roles = [
   { value: 0, label: '普通用户' },
   { value: 1, label: '教练' },
@@ -164,6 +182,7 @@ async function handleLogin() {
   loginError.value = ''
   if (!loginForm.username.trim()) { loginError.value = '请输入用户名'; return }
   if (!loginForm.password) { loginError.value = '请输入密码'; return }
+  if (!loginForm.captchaCode.trim()) { loginError.value = '请输入验证码'; return }
   loading.value = true
   try {
     const { data: res } = await request.post('/auth/login', loginForm)
@@ -172,6 +191,7 @@ async function handleLogin() {
       userStore.setUserInfo(res.data)
       router.push((res.data.role || 0) >= 1 ? '/admin' : '/')
     } else {
+      refreshCaptcha()
       loginError.value = res.message
     }
   } catch {
@@ -189,15 +209,12 @@ async function handleRegister() {
   try {
     const { data: res } = await request.post('/auth/register', registerForm)
     if (res.code === 200) {
-      const { data: loginRes } = await request.post('/auth/login', {
-        username: registerForm.username,
-        password: registerForm.password
-      })
-      if (loginRes.code === 200) {
-        userStore.setToken(loginRes.data.token, loginRes.data.refreshToken)
-        userStore.setUserInfo(loginRes.data)
-        router.push((loginRes.data.role || 0) >= 1 ? '/admin' : '/')
-      }
+      // 注册成功，切回登录页
+      activeTab.value = 'login'
+      loginForm.username = registerForm.username
+      loginForm.password = ''
+      loginError.value = '注册成功，请登录'
+      registerError.value = ''
     } else {
       registerError.value = res.message
     }
@@ -309,27 +326,18 @@ async function handleRegister() {
 }
 .form-card {
   @apply w-full rounded-3xl p-8;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--card);
+  border: 1px solid var(--border);
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
   animation: fadeInUp 0.8s 0.15s ease both;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
 }
 
-/* Tab */
-.tab-bar {
-  @apply flex mb-8 p-1 rounded-xl;
-  background: rgba(255, 255, 255, 0.04);
-}
-.tab {
-  @apply flex-1 py-2.5 text-sm rounded-lg transition-all duration-300;
-  color: rgba(255, 255, 255, 0.5);
-}
-.tab.active {
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+/* 表单标题 */
+.form-title {
+  @apply text-xl font-bold mb-8 text-center;
+  color: var(--text);
 }
 
 /* 表单 */
@@ -350,8 +358,8 @@ async function handleRegister() {
 }
 .input {
   @apply w-full px-4 py-3 rounded-xl text-sm text-white transition-all duration-300;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--card);
+  border: 1px solid var(--border);
   outline: none;
 }
 .input:focus {
@@ -371,13 +379,13 @@ async function handleRegister() {
 }
 .chip {
   @apply px-4 py-2 rounded-lg text-sm transition-all duration-200;
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--card);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
   cursor: pointer;
 }
 .chip:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--hover-bg);
 }
 .chip.on {
   background: rgba(255, 107, 107, 0.15);
@@ -395,7 +403,7 @@ async function handleRegister() {
 .submit-btn {
   @apply w-full py-3 rounded-xl text-sm font-semibold tracking-widest transition-all duration-300 mt-2;
   background: linear-gradient(135deg, #FF6B6B, #FF8E53);
-  color: #fff;
+  color: var(--text);
   box-shadow: 0 4px 20px rgba(255, 107, 107, 0.3);
   cursor: pointer;
 }
@@ -414,6 +422,49 @@ async function handleRegister() {
 .spinner {
   @apply inline-block w-5 h-5 border-2 border-white/30 border-t-white rounded-full;
   animation: spin 0.6s linear infinite;
+}
+
+/* 验证码 */
+.captcha-row {
+  @apply flex gap-3;
+}
+.captcha-input {
+  @apply flex-1;
+}
+.captcha-box {
+  @apply w-28 h-[42px] rounded-xl flex items-center justify-center select-none transition-all duration-200;
+  background: var(--card);
+  border: 1px solid var(--border);
+  cursor: pointer;
+}
+.captcha-box:hover:not(:disabled) {
+  border-color: rgba(255, 107, 107, 0.4);
+}
+.captcha-text {
+  font-family: 'Courier New', monospace;
+  @apply text-xl font-bold tracking-[0.3em] select-none;
+  color: #FF6B6B;
+  text-decoration: line-through;
+  pointer-events: none;
+}
+.captcha-loading {
+  @apply text-xs;
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+/* 注册入口 */
+.switch-link {
+  @apply text-center text-sm mt-4;
+  color: var(--text-secondary);
+}
+.switch-link a {
+  color: #FF6B6B;
+  text-decoration: none;
+  @apply transition-colors;
+}
+.switch-link a:hover {
+  color: #FF8E53;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes fadeInUp {

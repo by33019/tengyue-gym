@@ -23,7 +23,7 @@
           </div>
           <div class="card-footer">
             <span class="card-stat">{{ t.detailCount || 0 }} 个训练日</span>
-            <button class="unpublish-btn" @click="unpublish(t)">取消发布</button>
+            <button v-if="t.userId === currentUserId" class="unpublish-btn" @click="unpublish(t)">取消发布</button>
           </div>
         </div>
       </div>
@@ -44,7 +44,7 @@
           </div>
           <div class="card-footer">
             <span :class="p.status ? 'tag-green' : 'tag-red'">{{ p.status ? '进行中' : '已停用' }}</span>
-            <button class="publish-btn" @click="publish(p)">发布为模板</button>
+            <button v-if="p.status" class="publish-btn" @click="publish(p)">发布为模板</button>
           </div>
         </div>
       </div>
@@ -53,8 +53,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useUserStore } from '@/stores/user'
 import request from '@/api/request'
+
+const userStore = useUserStore()
+const currentUserId = computed(() => userStore.userInfo?.id ?? 0)
 
 const activeTab = ref('published')
 const templates = ref<any[]>([])
@@ -94,23 +98,23 @@ function diffClass(d: string) {
 </script>
 
 <style scoped>
-.page-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.05em; color: #fff; margin-bottom: 1.5rem; }
+.page-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.05em; color: var(--text); margin-bottom: 1.5rem; }
 
 .tab-row { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
-.tab-btn { padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-size: 0.875rem; background: none; border: 1px solid rgba(255,255,255,0.06); color: rgba(255,255,255,0.4); cursor: pointer; transition: all 0.2s; }
-.tab-btn:hover { color: rgba(255,255,255,0.7); }
+.tab-btn { padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-size: 0.875rem; background: none; border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; }
+.tab-btn:hover { color: var(--text-secondary); }
 .tab-btn.active { background: rgba(255,59,92,0.15); border-color: transparent; color: #FF3B5C; font-weight: 600; }
 
-.empty { font-size: 0.875rem; text-align: center; padding: 3rem 0; color: rgba(255,255,255,0.15); }
+.empty { font-size: 0.875rem; text-align: center; padding: 3rem 0; color: var(--text-muted); }
 
 .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
 
-.plan-card { padding: 1.25rem; border-radius: 0.75rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
+.plan-card { padding: 1.25rem; border-radius: 0.75rem; background: var(--card); border: 1px solid var(--border); }
 .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
-.card-name { font-size: 1rem; color: #fff; font-weight: 500; }
-.card-meta { display: flex; gap: 0.75rem; font-size: 0.75rem; color: rgba(255,255,255,0.3); margin-bottom: 0.75rem; }
+.card-name { font-size: 1rem; color: var(--text); font-weight: 500; }
+.card-meta { display: flex; gap: 0.75rem; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.75rem; }
 .card-footer { display: flex; justify-content: space-between; align-items: center; }
-.card-stat { font-size: 0.75rem; color: rgba(255,255,255,0.4); }
+.card-stat { font-size: 0.75rem; color: var(--text-secondary); }
 
 .diff-tag { padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-size: 0.7rem; }
 .diff-beginner { background: rgba(0,245,160,0.1); color: #00F5A0; }
@@ -122,6 +126,6 @@ function diffClass(d: string) {
 
 .publish-btn { padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; background: rgba(0,245,160,0.1); border: 1px solid rgba(0,245,160,0.2); color: #00F5A0; cursor: pointer; transition: all 0.2s; }
 .publish-btn:hover { background: rgba(0,245,160,0.2); }
-.unpublish-btn { padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.4); cursor: pointer; transition: all 0.2s; }
+.unpublish-btn { padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; background: var(--card); border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; }
 .unpublish-btn:hover { color: #FF3B5C; border-color: rgba(255,59,92,0.2); }
 </style>

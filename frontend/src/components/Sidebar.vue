@@ -20,6 +20,12 @@
       </router-link>
     </nav>
 
+    <!-- 主题切换 -->
+    <button @click="toggleTheme" class="theme-toggle-btn" :title="isLight ? '切换到暗色模式' : '切换到浅色模式'">
+      <span v-if="isLight">🌙</span>
+      <span v-else>☀️</span>
+    </button>
+
     <!-- 用户区 -->
     <div class="user-area">
       <div class="user-avatar">
@@ -42,13 +48,28 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
+
+// 主题切换
+const isLight = ref(false)
+function applyTheme(light: boolean) {
+  document.documentElement.setAttribute('data-theme', light ? 'light' : 'dark')
+  isLight.value = light
+  localStorage.setItem('theme', light ? 'light' : 'dark')
+}
+function toggleTheme() {
+  applyTheme(!isLight.value)
+}
+onMounted(() => {
+  const saved = localStorage.getItem('theme')
+  applyTheme(saved === 'light')
+})
 
 const username = computed(() => userStore.userInfo?.username || '用户')
 const avatarUrl = computed(() => userStore.userInfo?.avatar || '')
@@ -115,14 +136,14 @@ function logout() {
 .sidebar {
   @apply fixed left-0 top-0 h-full flex flex-col;
   width: 240px;
-  background: linear-gradient(180deg, #0F0F1A 0%, #0B0B14 100%);
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border);
   z-index: 40;
 }
 
 .logo-area {
   @apply flex items-center gap-2.5 px-5 py-6;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--border);
 }
 .logo-icon {
   font-size: 26px;
@@ -136,7 +157,7 @@ function logout() {
   line-height: 1;
   letter-spacing: 0.08em;
   padding-top: 2px;
-  background: linear-gradient(135deg, #FF3B5C, #FF8C00);
+  background: linear-gradient(135deg, var(--primary), #FF8C00);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -147,32 +168,47 @@ function logout() {
 .nav-link {
   @apply flex items-center gap-3 px-3 py-2.5 rounded-xl relative transition-all duration-200;
   text-decoration: none;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--text-muted);
 }
 .nav-link:hover {
-  color: rgba(255, 255, 255, 0.8);
-  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  background: var(--hover-bg);
 }
 .nav-link.active {
-  color: #fff;
-  background: linear-gradient(135deg, rgba(255, 59, 92, 0.15), rgba(255, 140, 0, 0.1));
+  color: var(--text);
+  background: var(--active-bg);
 }
 .nav-link-icon { font-size: 18px; width: 24px; text-align: center; }
 .nav-link-label { font-size: 14px; font-weight: 500; }
 .active-dot {
   @apply absolute right-3 w-1.5 h-1.5 rounded-full;
-  background: #FF3B5C;
+  background: var(--primary);
   box-shadow: 0 0 8px rgba(255, 59, 92, 0.6);
+}
+
+/* 主题切换按钮 */
+.theme-toggle-btn {
+  @apply flex items-center justify-center mx-2 mb-1 py-2 rounded-xl transition-all duration-200;
+  background: var(--hover-bg);
+  border: 1px solid transparent;
+  color: var(--text-secondary);
+  font-size: 18px;
+  cursor: pointer;
+}
+.theme-toggle-btn:hover {
+  border-color: var(--border);
+  color: var(--text);
+  background: var(--hover-bg);
 }
 
 .user-area {
   @apply flex items-center gap-2.5 px-4 py-4 mx-2 mb-2 rounded-2xl;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: var(--hover-bg);
+  border: 1px solid var(--border);
 }
 .user-avatar {
   @apply w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0 overflow-hidden;
-  background: linear-gradient(135deg, #FF3B5C, #FF8C00);
+  background: linear-gradient(135deg, var(--primary), #FF8C00);
   color: #fff;
 }
 .avatar-img {
@@ -183,18 +219,18 @@ function logout() {
 }
 .user-name {
   @apply block text-sm font-medium truncate;
-  color: #fff;
+  color: var(--text);
 }
 .user-role {
   @apply block text-xs;
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--text-muted);
 }
 .logout-btn {
   @apply p-1.5 rounded-lg transition-colors shrink-0;
-  color: rgba(255, 255, 255, 0.2);
+  color: var(--text-muted);
   background: none;
   border: none;
   cursor: pointer;
 }
-.logout-btn:hover { color: #FF3B5C; background: rgba(255, 59, 92, 0.1); }
+.logout-btn:hover { color: var(--primary); background: rgba(255, 59, 92, 0.1); }
 </style>

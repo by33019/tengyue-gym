@@ -56,8 +56,11 @@
         <div class="card-actions">
           <button class="action-btn" @click="router.push('/plan/' + p.id)">详情</button>
           <button class="action-btn" @click="togglePlan(p)">{{ p.status === 1 ? '停用' : '启用' }}</button>
-          <button v-if="userRole >= 1" class="action-btn pub-btn" @click="togglePublish(p)">
-            {{ p.isTemplate || p.source === '模板' ? '取消发布' : '发布模板' }}
+          <button v-if="userRole >= 1 && (!p.isTemplate && p.source !== '模板')" class="action-btn pub-btn" @click="publishPlan(p)">
+            发布模板
+          </button>
+          <button v-if="userRole >= 1 && (p.isTemplate || p.source === '模板')" class="action-btn del-btn" @click="deletePlan(p)">
+            删除
           </button>
         </div>
       </div>
@@ -112,22 +115,27 @@ async function applyTemplate(t: any) {
   } catch { /* */ }
 }
 
-async function togglePublish(p: any) {
+async function publishPlan(p: any) {
   try {
-    if (p.isTemplate || p.source === '模板') {
-      await planApi.unpublishTemplate(p.id)
-    } else {
-      await planApi.publishTemplate(p.id)
-    }
+    await planApi.publishTemplate(p.id)
     loadPlans()
-  } catch { /* */ }
+  } catch (e: any) { alert('发布失败: ' + (e?.response?.data?.message || e.message)) }
+}
+
+async function deletePlan(p: any) {
+  if (!confirm('确定要删除该计划吗？此操作不可恢复！')) return
+  try {
+    const { data: res } = await planApi.deletePlan(p.id)
+    if (res.code === 200) loadPlans()
+    else alert(res.message)
+  } catch (e: any) { alert('删除失败: ' + (e?.response?.data?.message || e.message)) }
 }
 </script>
 
 <style scoped>
 .plan-page {
   @apply min-h-screen;
-  background: #0a0a0f;
+  background: var(--bg);
   font-family: 'Noto Sans SC', system-ui, sans-serif;
 }
 .header-row {
@@ -137,12 +145,12 @@ async function togglePublish(p: any) {
 .page-title {
   font-family: 'Bebas Neue', sans-serif;
   @apply text-4xl tracking-wider;
-  color: #fff;
+  color: var(--text);
 }
 .add-btn {
   @apply px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200;
   background: linear-gradient(135deg, #FF6B6B, #FF8E53);
-  color: #fff;
+  color: var(--text);
   text-decoration: none;
 }
 .add-btn:hover { transform: translateY(-1px); }
@@ -150,9 +158,9 @@ async function togglePublish(p: any) {
 .filter-row { @apply flex gap-2 mb-6; }
 .filter-chip {
   @apply px-4 py-2 rounded-lg text-sm transition-all duration-200;
-  background: rgba(255, 255, 255, 0.03);
-  color: rgba(255, 255, 255, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--card);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
   cursor: pointer;
 }
 .filter-chip.on { background: rgba(255, 107, 107, 0.1); border-color: rgba(255, 107, 107, 0.3); color: #FF6B6B; }
@@ -171,11 +179,11 @@ async function togglePublish(p: any) {
 .template-list { @apply mb-4; }
 .template-card {
   @apply flex justify-between items-center p-3 rounded-xl mb-2;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: var(--card);
+  border: 1px solid var(--border);
 }
-.tpl-name { @apply block text-sm; color: #fff; }
-.tpl-meta { @apply text-xs; color: rgba(255, 255, 255, 0.3); }
+.tpl-name { @apply block text-sm; color: var(--text); }
+.tpl-meta { @apply text-xs; color: var(--text-secondary); }
 .apply-btn {
   @apply px-3 py-1 rounded-lg text-xs transition-all;
   background: rgba(0, 245, 160, 0.1);
@@ -185,23 +193,23 @@ async function togglePublish(p: any) {
 }
 .apply-btn:hover { background: rgba(0, 245, 160, 0.2); }
 
-.empty-text { @apply text-sm text-center py-8; color: rgba(255, 255, 255, 0.15); }
+.empty-text { @apply text-sm text-center py-8; color: var(--text-muted); }
 
 .plan-card {
   @apply rounded-2xl p-5 mb-3 transition-all duration-300;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--card);
+  border: 1px solid var(--border);
   animation: fadeInUp 0.4s ease both;
 }
 .plan-card.inactive { opacity: 0.5; }
 .card-top { @apply flex justify-between items-start mb-3; }
-.plan-name { @apply text-base font-semibold; color: #fff; }
+.plan-name { @apply text-base font-semibold; color: var(--text); }
 .plan-tags { @apply flex gap-1.5 mt-1.5; }
 .tag {
   @apply px-2 py-0.5 rounded text-[10px];
 }
 .tag.source { background: rgba(0, 210, 255, 0.1); color: #00D2FF; }
-.tag.goal { background: rgba(255, 255, 255, 0.05); color: rgba(255, 255, 255, 0.5); }
+.tag.goal { background: var(--card); color: var(--text-secondary); }
 .tag.diff { color: #FF6B6B; }
 .tag.diff-入门 { background: rgba(0, 245, 160, 0.1); color: #00F5A0; }
 .tag.diff-进阶 { background: rgba(255, 107, 107, 0.1); color: #FF6B6B; }
@@ -209,20 +217,22 @@ async function togglePublish(p: any) {
 
 .status-badge { @apply px-3 py-1 rounded-full text-xs; }
 .status-badge.active { background: rgba(0, 245, 160, 0.1); color: #00F5A0; }
-.status-badge.paused { background: rgba(255, 255, 255, 0.05); color: rgba(255, 255, 255, 0.3); }
+.status-badge.paused { background: var(--card); color: var(--text-secondary); }
 
-.card-meta { @apply text-xs mb-3; color: rgba(255, 255, 255, 0.2); }
+.card-meta { @apply text-xs mb-3; color: var(--text-muted); }
 .card-actions { @apply flex gap-2; }
 .action-btn {
   @apply px-4 py-2 rounded-lg text-xs transition-all duration-200;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.5);
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
   cursor: pointer;
 }
-.action-btn:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+.action-btn:hover { background: var(--hover-bg); color: var(--text); }
 .pub-btn { color: #00F5A0; border-color: rgba(0,245,160,0.15); }
 .pub-btn:hover { color: #00F5A0; }
+.del-btn { color: #FF3B5C; border-color: rgba(255,59,92,0.2); }
+.del-btn:hover { background: rgba(255,59,92,0.1); color: #FF3B5C; }
 
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(16px); }

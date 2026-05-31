@@ -73,34 +73,34 @@ async function toggleStatus() {
 <style scoped>
 .detail-page {
   @apply min-h-screen;
-  background: #0a0a0f;
+  background: var(--bg);
   font-family: 'Noto Sans SC', system-ui, sans-serif;
 }
 .header-row { @apply flex items-center justify-between mb-6; }
-.back-btn { background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; font-size: 14px; }
-.back-btn:hover { color: #fff; }
-.page-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: #fff; letter-spacing: 0.05em; }
+.back-btn { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 14px; }
+.back-btn:hover { color: var(--text); }
+.page-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--text); letter-spacing: 0.05em; }
 
 .info-card {
   @apply rounded-2xl p-5;
-  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+  background: var(--card); border: 1px solid var(--border);
 }
 .info-row { @apply flex flex-wrap gap-x-6 gap-y-2 text-sm; }
-.info-label { color: rgba(255,255,255,0.3); }
-.info-val { color: #fff; margin-right: 12px; }
+.info-label { color: var(--text-secondary); }
+.info-val { color: var(--text); margin-right: 12px; }
 
-.section-title { @apply text-sm mb-4 mt-6; color: rgba(255,255,255,0.4); }
+.section-title { @apply text-sm mb-4 mt-6; color: var(--text-secondary); }
 
 .day-block { @apply mb-4; }
 .day-label { @apply text-sm font-medium mb-2; color: #FF6B6B; }
-.rest-text { @apply text-xs py-2; color: rgba(255,255,255,0.15); }
+.rest-text { @apply text-xs py-2; color: var(--text-muted); }
 .ex-item {
   @apply flex items-center gap-3 py-2 px-3 rounded-lg mb-1;
-  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.03);
+  background: var(--card); border: 1px solid var(--border);
 }
-.ex-name { @apply text-sm; color: #fff; min-width: 80px; }
-.ex-detail { @apply text-xs; color: rgba(255,255,255,0.3); }
-.ex-note { @apply text-xs; color: rgba(255,255,255,0.15); }
+.ex-name { @apply text-sm; color: var(--text); min-width: 80px; }
+.ex-detail { @apply text-xs; color: var(--text-secondary); }
+.ex-note { @apply text-xs; color: var(--text-muted); }
 
 .action-row { @apply flex gap-3 mt-8; }
 .edit-btn, .toggle-btn {
@@ -108,7 +108,7 @@ async function toggleStatus() {
   border: none;
 }
 .edit-btn { background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: #fff; }
-.toggle-btn { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.08); }
+.toggle-btn { background: var(--card); color: var(--text-secondary); border: 1px solid var(--border); }
 .edit-btn:hover { transform: translateY(-1px); }
-.toggle-btn:hover { color: #fff; }
+.toggle-btn:hover { color: var(--text); }
 </style>

@@ -10,8 +10,10 @@ import com.gym.security.JwtUtils;
 import com.gym.service.AuthService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +22,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
+    private final StringRedisTemplate stringRedisTemplate;
 
     @Override
     public void register(RegisterDTO dto) {
@@ -43,6 +46,21 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginVO login(LoginDTO dto) {
+        // 验证码校验
+        if (StringUtils.hasText(dto.getCaptchaKey()) || StringUtils.hasText(dto.getCaptchaCode())) {
+            if (!StringUtils.hasText(dto.getCaptchaKey()) || !StringUtils.hasText(dto.getCaptchaCode())) {
+                throw new RuntimeException("请输入验证码");
+            }
+            String cachedCode = stringRedisTemplate.opsForValue().get("captcha:" + dto.getCaptchaKey());
+            if (cachedCode == null) {
+                throw new RuntimeException("验证码已过期，请刷新");
+            }
+            if (!cachedCode.equalsIgnoreCase(dto.getCaptchaCode())) {
+                throw new RuntimeException("验证码错误");
+            }
+            stringRedisTemplate.delete("captcha:" + dto.getCaptchaKey());
+        }
+
         User user = userMapper.selectOne(
                 new LambdaQueryWrapper<User>().eq(User::getUsername, dto.getUsername()));
         if (user == null || !passwordEncoder.matches(dto.getPassword(), user.getPassword())) {

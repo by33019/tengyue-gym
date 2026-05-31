@@ -113,26 +113,26 @@ async function deleteUser(u: any) {
 </script>
 
 <style scoped>
-.page-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.05em; color: #fff; margin-bottom: 1.5rem; }
+.page-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.05em; color: var(--text); margin-bottom: 1.5rem; }
 
 .filter-bar { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-.filter-select { padding: 0.5rem 0.75rem; border-radius: 0.5rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); color: #fff; font-size: 0.875rem; outline: none; cursor: pointer; }
-.filter-select option { background: #151520; color: #fff; }
-.filter-search { padding: 0.5rem 0.75rem; border-radius: 0.5rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); color: #fff; font-size: 0.875rem; outline: none; min-width: 160px; }
-.filter-search::placeholder { color: rgba(255,255,255,0.2); }
+.filter-select { padding: 0.5rem 0.75rem; border-radius: 0.5rem; background: var(--card); border: 1px solid var(--border); color: var(--text); font-size: 0.875rem; outline: none; cursor: pointer; }
+.filter-select option { background: #151520; color: var(--text); }
+.filter-search { padding: 0.5rem 0.75rem; border-radius: 0.5rem; background: var(--card); border: 1px solid var(--border); color: var(--text); font-size: 0.875rem; outline: none; min-width: 160px; }
+.filter-search::placeholder { color: var(--text-muted); }
 .filter-search:focus { border-color: rgba(255,59,92,0.3); }
-.refresh-btn { padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.6); cursor: pointer; }
-.refresh-btn:hover { color: #fff; }
+.refresh-btn { padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; background: var(--card); border: 1px solid var(--border); color: var(--text); cursor: pointer; }
+.refresh-btn:hover { color: var(--text); }
 
-.empty { font-size: 0.875rem; text-align: center; padding: 3rem 0; color: rgba(255,255,255,0.15); }
+.empty { font-size: 0.875rem; text-align: center; padding: 3rem 0; color: var(--text-muted); }
 
 .table-wrap { overflow-x: auto; }
 .data-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
-.data-table th { text-align: left; padding: 0.75rem 1rem; color: rgba(255,255,255,0.25); font-weight: 500; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid rgba(255,255,255,0.06); }
-.data-table td { padding: 0.75rem 1rem; color: rgba(255,255,255,0.6); border-bottom: 1px solid rgba(255,255,255,0.03); }
-.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+.data-table th { text-align: left; padding: 0.75rem 1rem; color: var(--text-muted); font-weight: 500; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); }
+.data-table td { padding: 0.75rem 1rem; color: var(--text); border-bottom: 1px solid var(--border); }
+.data-table tr:hover td { background: var(--card); }
 .row-disabled td { opacity: 0.4; }
-.td-name { color: #fff; font-weight: 500; }
+.td-name { color: var(--text); font-weight: 500; }
 .td-actions { display: flex; gap: 0.25rem; }
 
 .action-btn { padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; border: none; cursor: pointer; transition: all 0.15s; }
@@ -145,11 +145,11 @@ async function deleteUser(u: any) {
 
 .tag-green { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; background: rgba(0,245,160,0.1); color: #00F5A0; white-space: nowrap; }
 .tag-red { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; background: rgba(255,107,107,0.1); color: #FF6B6B; white-space: nowrap; }
-.tag-default { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.4); white-space: nowrap; }
+.tag-default { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; background: var(--card); color: var(--text-secondary); white-space: nowrap; }
 
 .pager { display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 1.5rem; }
-.pager button { padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.6); cursor: pointer; }
-.pager button:hover:not(:disabled) { color: #fff; }
+.pager button { padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; background: var(--card); border: 1px solid var(--border); color: var(--text); cursor: pointer; }
+.pager button:hover:not(:disabled) { color: var(--text); }
 .pager button:disabled { opacity: 0.3; cursor: default; }
-.page-info { font-size: 0.875rem; color: rgba(255,255,255,0.3); }
+.page-info { font-size: 0.875rem; color: var(--text-secondary); }
 </style>

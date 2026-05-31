@@ -95,32 +95,32 @@ function fmt(t: string) { if (!t) return ''; const d = new Date(t); return `${d.
 </script>
 
 <style scoped>
-.page { @apply min-h-screen; background: #0a0a0f; font-family: 'Noto Sans SC', sans-serif; }
-.page-title { font-family: 'Bebas Neue', sans-serif; @apply text-3xl tracking-wider mb-4; color: #fff; }
+.page { @apply min-h-screen; background: var(--bg); font-family: 'Noto Sans SC', sans-serif; }
+.page-title { font-family: 'Bebas Neue', sans-serif; @apply text-3xl tracking-wider mb-4; color: var(--text); }
 .post-box { @apply mb-6; }
-.post-input { @apply w-full p-4 rounded-xl text-sm resize-none; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); color: #fff; outline: none; }
+.post-input { @apply w-full p-4 rounded-xl text-sm resize-none; background: var(--card); border: 1px solid var(--border); color: var(--text); outline: none; }
 .post-input:focus { border-color: rgba(255,107,107,0.3); }
 .post-btn { @apply mt-2 px-6 py-2 rounded-xl text-sm font-semibold transition-all; background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: #fff; border: none; cursor: pointer; }
 .post-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .error-msg { @apply text-xs mt-2; color: #FF6B6B; }
 .post-btn.sm { @apply px-3 py-1.5 text-xs; }
-.empty { @apply text-sm text-center py-12; color: rgba(255,255,255,0.15); }
-.feed-card { @apply p-4 rounded-2xl mb-3; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
+.empty { @apply text-sm text-center py-12; color: var(--text-muted); }
+.feed-card { @apply p-4 rounded-2xl mb-3; background: var(--card); border: 1px solid var(--border); }
 .feed-header { @apply flex justify-between mb-2; }
 .feed-user { @apply text-sm font-semibold; color: #FF6B6B; }
-.feed-time { @apply text-xs; color: rgba(255,255,255,0.2); }
-.feed-content { @apply text-sm leading-relaxed mb-3; color: rgba(255,255,255,0.7); }
+.feed-time { @apply text-xs; color: var(--text-muted); }
+.feed-content { @apply text-sm leading-relaxed mb-3; color: var(--text-secondary); }
 .feed-actions { @apply flex gap-4; }
-.act-btn { @apply text-xs px-3 py-1 rounded-lg; background: rgba(255,255,255,0.03); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: all 0.2s; }
+.act-btn { @apply text-xs px-3 py-1 rounded-lg; background: var(--card); color: var(--text-secondary); border: 1px solid var(--border); cursor: pointer; transition: all 0.2s; }
 .act-btn:hover { color: #FF6B6B; }
-.comment-section { @apply mt-3 pt-3; border-top: 1px solid rgba(255,255,255,0.04); }
+.comment-section { @apply mt-3 pt-3; border-top: 1px solid var(--border); }
 .comment-item { @apply py-2; }
 .comment-item.reply { @apply ml-0; }
 .comment-item.sub { @apply ml-6; }
 .cmt-user { @apply text-xs mr-2; color: #FF6B6B; }
-.cmt-content { @apply text-sm; color: rgba(255,255,255,0.6); }
-.reply-btn { @apply text-xs ml-2; background: none; border: none; color: rgba(255,255,255,0.2); cursor: pointer; }
+.cmt-content { @apply text-sm; color: var(--text); }
+.reply-btn { @apply text-xs ml-2; background: none; border: none; color: var(--text-muted); cursor: pointer; }
 .reply-btn:hover { color: #00F5A0; }
 .reply-box { @apply flex gap-2 mt-2; }
-.reply-input { @apply flex-1 px-3 py-2 rounded-lg text-xs; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); color: #fff; outline: none; }
+.reply-input { @apply flex-1 px-3 py-2 rounded-lg text-xs; background: var(--card); border: 1px solid var(--border); color: var(--text); outline: none; }
 </style>

@@ -35,23 +35,23 @@ async function load() {
 </script>
 
 <style scoped>
-.page { @apply min-h-screen; background: #0a0a0f; font-family: 'Noto Sans SC', sans-serif; }
-.page-title { font-family: 'Bebas Neue', sans-serif; @apply text-3xl tracking-wider mb-4; color: #fff; }
+.page { @apply min-h-screen; background: var(--bg); font-family: 'Noto Sans SC', sans-serif; }
+.page-title { font-family: 'Bebas Neue', sans-serif; @apply text-3xl tracking-wider mb-4; color: var(--text); }
 .tab-row, .tab-row-sub { @apply flex gap-2 mb-3; }
-.tab { @apply px-4 py-2 rounded-lg text-sm; background: rgba(255,255,255,0.03); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: all 0.2s; }
+.tab { @apply px-4 py-2 rounded-lg text-sm; background: var(--card); color: var(--text-secondary); border: 1px solid var(--border); cursor: pointer; transition: all 0.2s; }
 .tab.sm { @apply px-3 py-1.5 text-xs; }
 .tab.on { background: rgba(255,107,107,0.1); border-color: rgba(255,107,107,0.3); color: #FF6B6B; }
-.empty { @apply text-sm text-center py-12; color: rgba(255,255,255,0.15); }
-.rank-card { @apply flex items-center gap-4 p-4 rounded-xl mb-2; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
+.empty { @apply text-sm text-center py-12; color: var(--text-muted); }
+.rank-card { @apply flex items-center gap-4 p-4 rounded-xl mb-2; background: var(--card); border: 1px solid var(--border); }
 .rank-card.top-1 { border-color: rgba(255,215,0,0.3); background: rgba(255,215,0,0.03); }
 .rank-card.top-2 { border-color: rgba(192,192,192,0.2); }
 .rank-card.top-3 { border-color: rgba(205,127,50,0.2); }
-.rank-num { @apply w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold; color: rgba(255,255,255,0.3); }
+.rank-num { @apply w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold; color: var(--text-secondary); }
 .top-1 .rank-num { color: #FFD700; }
 .top-2 .rank-num { color: #C0C0C0; }
 .top-3 .rank-num { color: #CD7F32; }
 .rank-info { @apply flex-1; }
-.rank-name { @apply text-sm; color: #fff; }
+.rank-name { @apply text-sm; color: var(--text); }
 .rank-val { @apply text-lg; font-family: 'Bebas Neue', sans-serif; color: #FF6B6B; }
-.rank-val small { @apply text-xs; color: rgba(255,255,255,0.3); font-family: 'Noto Sans SC', sans-serif; }
+.rank-val small { @apply text-xs; color: var(--text-secondary); font-family: 'Noto Sans SC', sans-serif; }
 </style>

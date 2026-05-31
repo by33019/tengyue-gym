@@ -114,13 +114,15 @@ onMounted(async () => {
   gap: 1.5rem;
   background: linear-gradient(135deg, #1A0A2E 0%, #16213E 40%, #0F3460 100%);
   border: 1px solid rgba(255, 59, 92, 0.1);
+  /* hero banner 始终暗色，文字始终亮色 */
+  color-scheme: dark;
 }
 @media (min-width: 768px) { .hero-banner { padding: 2.5rem; } }
 
 .hero-text { flex: 1; min-width: 200px; }
 .hero-greeting { font-size: 2rem; font-weight: 700; color: #fff; margin: 0; }
 @media (min-width: 768px) { .hero-greeting { font-size: 2.5rem; } }
-.hero-subtitle { margin-top: 0.5rem; color: rgba(255, 255, 255, 0.5); font-size: 1rem; }
+.hero-subtitle { margin-top: 0.5rem; color: rgba(255, 255, 255, 0.7); font-size: 1rem; }
 
 .hero-stats { display: flex; gap: 1.5rem; }
 .hero-stat {
@@ -130,7 +132,7 @@ onMounted(async () => {
   justify-content: center;
   padding: 0.75rem 1.5rem;
   border-radius: 0.75rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.08);
   min-width: 80px;
 }
 .hero-stat-value {
@@ -138,7 +140,7 @@ onMounted(async () => {
   font-size: 2rem;
   color: #FF3B5C;
 }
-.hero-stat-label { font-size: 0.75rem; color: rgba(255, 255, 255, 0.3); }
+.hero-stat-label { font-size: 0.75rem; color: rgba(255, 255, 255, 0.4); }
 
 .hero-decoration { position: absolute; right: 1rem; bottom: -0.5rem; opacity: 0.15; }
 .hero-emoji { font-size: 120px; }
@@ -148,7 +150,7 @@ onMounted(async () => {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 1.5rem;
   letter-spacing: 0.05em;
-  color: #fff;
+  color: var(--text);
   margin: 0;
 }
 
@@ -169,18 +171,18 @@ onMounted(async () => {
   border-radius: 0.75rem;
   transition: all 0.2s ease;
   text-decoration: none;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: var(--card);
+  border: 1px solid var(--border);
 }
 .quick-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: var(--text-muted);
 }
 .quick-icon { font-size: 28px; flex-shrink: 0; }
 .quick-info { flex: 1; min-width: 0; }
-.quick-label { display: block; font-size: 0.9rem; font-weight: 600; color: #fff; }
-.quick-desc { display: block; font-size: 0.75rem; color: rgba(255, 255, 255, 0.3); margin-top: 2px; }
-.quick-arrow { color: rgba(255, 255, 255, 0.15); font-size: 1.2rem; flex-shrink: 0; }
+.quick-label { display: block; font-size: 0.9rem; font-weight: 600; color: var(--text); }
+.quick-desc { display: block; font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px; }
+.quick-arrow { color: var(--text-muted); font-size: 1.2rem; flex-shrink: 0; }
 .quick-card:hover .quick-arrow { color: #FF3B5C; }
 
 .accent-red { border-left: 3px solid #FF3B5C; }

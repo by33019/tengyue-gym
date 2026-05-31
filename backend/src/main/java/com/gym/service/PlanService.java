@@ -13,5 +13,6 @@ public interface PlanService {
     Page<PlanVO> listTemplates(int page, int size);
     void publishTemplate(Long userId, Long planId);
     void unpublishTemplate(Long userId, Long planId);
+    void deletePlan(Long userId, Long planId);
     PlanVO applyTemplate(Long userId, Long templateId);
 }

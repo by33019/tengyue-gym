@@ -71,26 +71,26 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.page-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.05em; color: #fff; margin-bottom: 1.5rem; }
+.page-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.05em; color: var(--text); margin-bottom: 1.5rem; }
 
 .summary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-.s-card { padding: 1.25rem; border-radius: 1rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
+.s-card { padding: 1.25rem; border-radius: 1rem; background: var(--card); border: 1px solid var(--border); }
 .s-val { display: block; font-size: 1.75rem; font-family: 'Bebas Neue', sans-serif; color: #FF3B5C; }
-.s-lbl { font-size: 0.75rem; color: rgba(255,255,255,0.3); }
+.s-lbl { font-size: 0.75rem; color: var(--text-secondary); }
 
 .quick-section { margin-top: 0.5rem; }
-.section-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; color: rgba(255,255,255,0.2); }
+.section-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; color: var(--text-muted); }
 
 .quick-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.75rem; }
 
 .quick-card {
   display: flex; flex-direction: column; gap: 0.25rem;
   padding: 1.25rem; border-radius: 0.75rem;
-  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
+  background: var(--card); border: 1px solid var(--border);
   text-decoration: none; transition: all 0.2s;
 }
 .quick-card:hover { background: rgba(255,59,92,0.06); border-color: rgba(255,59,92,0.15); }
 .quick-icon { font-size: 1.5rem; }
-.quick-label { font-size: 0.875rem; color: #fff; font-weight: 500; }
-.quick-desc { font-size: 0.75rem; color: rgba(255,255,255,0.3); }
+.quick-label { font-size: 0.875rem; color: var(--text); font-weight: 500; }
+.quick-desc { font-size: 0.75rem; color: var(--text-secondary); }
 </style>

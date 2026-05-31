@@ -133,32 +133,32 @@ async function doTransfer() {
 </script>
 
 <style scoped>
-.page-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.05em; color: #fff; margin-bottom: 1.5rem; }
+.page-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.05em; color: var(--text); margin-bottom: 1.5rem; }
 
 .summary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-.s-card { padding: 1.25rem; border-radius: 1rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
+.s-card { padding: 1.25rem; border-radius: 1rem; background: var(--card); border: 1px solid var(--border); }
 .s-val { display: block; font-size: 1.75rem; font-family: 'Bebas Neue', sans-serif; color: #FF3B5C; }
-.s-lbl { font-size: 0.75rem; color: rgba(255,255,255,0.3); }
+.s-lbl { font-size: 0.75rem; color: var(--text-secondary); }
 
-.empty { font-size: 0.875rem; text-align: center; padding: 3rem 0; color: rgba(255,255,255,0.15); }
-.empty-small { font-size: 0.75rem; text-align: center; padding: 1.5rem 0; color: rgba(255,255,255,0.1); }
+.empty { font-size: 0.875rem; text-align: center; padding: 3rem 0; color: var(--text-muted); }
+.empty-small { font-size: 0.75rem; text-align: center; padding: 1.5rem 0; color: var(--text-muted); }
 
 .coach-card-wrap { margin-bottom: 0.5rem; }
-.coach-card { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-radius: 0.75rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); cursor: pointer; transition: all 0.2s; }
-.coach-card:hover { background: rgba(255,255,255,0.04); }
+.coach-card { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-radius: 0.75rem; background: var(--card); border: 1px solid var(--border); cursor: pointer; transition: all 0.2s; }
+.coach-card:hover { background: var(--card); }
 .coach-info { display: flex; align-items: center; gap: 0.75rem; }
 .coach-avatar { font-size: 1.5rem; }
-.coach-name { display: block; font-size: 0.875rem; color: #fff; font-weight: 500; }
-.coach-meta { font-size: 0.75rem; color: rgba(255,255,255,0.3); }
-.expand-icon { font-size: 0.75rem; color: rgba(255,255,255,0.3); }
+.coach-name { display: block; font-size: 0.875rem; color: var(--text); font-weight: 500; }
+.coach-meta { font-size: 0.75rem; color: var(--text-secondary); }
+.expand-icon { font-size: 0.75rem; color: var(--text-secondary); }
 
-.section-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 2rem 0 0.75rem; color: rgba(255,255,255,0.2); }
+.section-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 2rem 0 0.75rem; color: var(--text-muted); }
 
-.student-sublist { margin-left: 1.5rem; border-left: 1px solid rgba(255,255,255,0.04); padding-left: 1rem; }
-.student-row { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; border-radius: 0.5rem; margin-bottom: 0.25rem; background: rgba(255,255,255,0.01); }
+.student-sublist { margin-left: 1.5rem; border-left: 1px solid var(--border); padding-left: 1rem; }
+.student-row { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; border-radius: 0.5rem; margin-bottom: 0.25rem; background: var(--card); }
 .student-info { flex: 1; }
-.student-name { font-size: 0.875rem; color: #fff; }
-.student-meta { display: block; font-size: 0.75rem; color: rgba(255,255,255,0.3); }
+.student-name { font-size: 0.875rem; color: var(--text); }
+.student-meta { display: block; font-size: 0.75rem; color: var(--text-secondary); }
 
 .transfer-btn, .assign-btn { padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; }
 .transfer-btn { background: rgba(255,140,0,0.1); border: 1px solid rgba(255,140,0,0.2); color: #FF8C00; }
@@ -167,14 +167,14 @@ async function doTransfer() {
 .assign-btn:hover { background: rgba(0,245,160,0.2); }
 
 .modal-overlay { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); }
-.modal-box { width: 90%; max-width: 400px; padding: 1.5rem; border-radius: 1rem; background: #151520; border: 1px solid rgba(255,255,255,0.08); }
-.modal-title { font-size: 1rem; color: #fff; margin-bottom: 1rem; }
-.modal-label { display: block; font-size: 0.75rem; color: rgba(255,255,255,0.3); margin-bottom: 0.25rem; }
-.modal-select { width: 100%; padding: 0.5rem 0.75rem; border-radius: 0.5rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); color: #fff; font-size: 0.875rem; outline: none; }
-.modal-select option { background: #151520; color: #fff; }
+.modal-box { width: 90%; max-width: 400px; padding: 1.5rem; border-radius: 1rem; background: var(--card); border: 1px solid var(--border); }
+.modal-title { font-size: 1rem; color: var(--text); margin-bottom: 1rem; }
+.modal-label { display: block; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.25rem; }
+.modal-select { width: 100%; padding: 0.5rem 0.75rem; border-radius: 0.5rem; background: var(--card); border: 1px solid var(--border); color: var(--text); font-size: 0.875rem; outline: none; }
+.modal-select option { background: #151520; color: var(--text); }
 .modal-select:focus { border-color: rgba(255,59,92,0.3); }
 .modal-actions { display: flex; gap: 0.5rem; margin-top: 1rem; justify-content: flex-end; }
 .send-btn { padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; background: rgba(255,59,92,0.15); border: 1px solid rgba(255,59,92,0.2); color: #FF3B5C; cursor: pointer; }
 .send-btn:hover { background: rgba(255,59,92,0.25); }
-.cancel-btn { padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); cursor: pointer; }
+.cancel-btn { padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; background: var(--card); border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer; }
 </style>

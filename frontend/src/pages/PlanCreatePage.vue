@@ -159,7 +159,7 @@ async function handleSubmit() {
 <style scoped>
 .create-page {
   @apply min-h-screen;
-  background: #0a0a0f;
+  background: var(--bg);
   font-family: 'Noto Sans SC', system-ui, sans-serif;
 }
 .header-row {
@@ -169,14 +169,14 @@ async function handleSubmit() {
 .back-btn {
   @apply text-sm transition-all duration-200;
   background: none; border: none;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-secondary);
   cursor: pointer;
 }
-.back-btn:hover { color: #fff; }
+.back-btn:hover { color: var(--text); }
 .page-title {
   font-family: 'Bebas Neue', sans-serif;
   @apply text-3xl tracking-wider;
-  color: #fff;
+  color: var(--text);
 }
 
 .form-card {
@@ -184,12 +184,14 @@ async function handleSubmit() {
 }
 .form-group { @apply mb-4 flex-1; }
 .form-label {
-  @apply block text-xs text-white/40 mb-2;
+  @apply block text-xs mb-2;
+  color: var(--text-muted);
 }
 .form-input, select.form-input {
-  @apply w-full px-4 py-3 rounded-xl text-sm text-white transition-all duration-300;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  @apply w-full px-4 py-3 rounded-xl text-sm transition-all duration-300;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--border);
   outline: none;
   appearance: none;
 }
@@ -200,72 +202,72 @@ async function handleSubmit() {
 select.form-input { background-image: none; }
 select.form-input option {
   background: #1a1a20;
-  color: #fff;
+  color: var(--text);
 }
 
 .form-row-3 { @apply grid grid-cols-3 gap-3; }
 .form-row-2 { @apply grid grid-cols-2 gap-3; }
 
 .section-header { @apply mt-6 mb-4; }
-.section-title { @apply text-sm; color: rgba(255, 255, 255, 0.5); }
+.section-title { @apply text-sm; color: var(--text-secondary); }
 
 .day-block { @apply mb-2; }
 .day-header {
   @apply flex items-center p-3 rounded-xl cursor-pointer transition-all duration-200;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: var(--card);
+  border: 1px solid var(--border);
 }
-.day-header:hover { background: rgba(255, 255, 255, 0.04); }
-.day-name { @apply text-sm font-medium; color: #fff; width: 60px; }
-.day-count { @apply flex-1 text-xs; color: rgba(255, 255, 255, 0.2); }
-.day-arrow { @apply text-xs transition-transform duration-300; color: rgba(255, 255, 255, 0.3); }
+.day-header:hover { background: var(--card); }
+.day-name { @apply text-sm font-medium; color: var(--text); width: 60px; }
+.day-count { @apply flex-1 text-xs; color: var(--text-muted); }
+.day-arrow { @apply text-xs transition-transform duration-300; color: var(--text-secondary); }
 .day-arrow.open { transform: rotate(180deg); }
 
 .day-body {
   @apply p-3 rounded-b-xl;
-  background: rgba(255, 255, 255, 0.01);
-  border: 1px solid rgba(255, 255, 255, 0.03);
+  background: var(--card);
+  border: 1px solid var(--border);
   border-top: none;
   animation: fadeIn 0.3s ease;
 }
 .exercise-row { @apply flex items-center gap-2 mb-2; }
 .ex-input {
   @apply flex-1 px-3 py-2 rounded-lg text-xs;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  color: #fff;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text);
   outline: none;
 }
 .ex-input:focus { border-color: rgba(255, 107, 107, 0.3); }
 .ex-num {
   @apply w-14 px-2 py-2 rounded-lg text-xs text-center;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  color: #fff;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text);
   outline: none;
 }
-.ex-times { color: rgba(255, 255, 255, 0.2); font-size: 12px; }
+.ex-times { color: var(--text-muted); font-size: 12px; }
 .ex-remove {
   @apply w-6 h-6 rounded-full flex items-center justify-center text-xs transition-all;
   background: none; border: none;
-  color: rgba(255, 255, 255, 0.2);
+  color: var(--text-muted);
   cursor: pointer;
 }
 .ex-remove:hover { color: #FF6B6B; background: rgba(255, 107, 107, 0.1); }
 
 .add-ex-btn {
   @apply w-full py-2 rounded-lg text-xs transition-all duration-200 mt-1;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px dashed rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.3);
+  background: var(--card);
+  border: 1px dashed var(--border);
+  color: var(--text-muted);
   cursor: pointer;
 }
-.add-ex-btn:hover { background: rgba(255, 255, 255, 0.04); color: rgba(255, 255, 255, 0.5); }
+.add-ex-btn:hover { background: var(--card); color: var(--text-secondary); }
 
 .submit-btn {
   @apply w-full py-3 rounded-xl text-sm font-semibold tracking-widest transition-all duration-300 mt-6;
   background: linear-gradient(135deg, #FF6B6B, #FF8E53);
-  color: #fff;
+  color: var(--text);
   cursor: pointer;
 }
 .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }

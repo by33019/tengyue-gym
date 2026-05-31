@@ -86,6 +86,13 @@ public class PlanController {
         catch (RuntimeException e) { return R.fail(e.getMessage()); }
     }
 
+    @DeleteMapping("/{id}")
+    public R<Void> deletePlan(@PathVariable Long id, HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute("userId");
+        try { planService.deletePlan(userId, id); return R.ok(); }
+        catch (RuntimeException e) { return R.fail(e.getMessage()); }
+    }
+
     @PostMapping("/{id}/apply")
     public R<Object> applyTemplate(@PathVariable Long id, HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");

@@ -168,7 +168,7 @@ function formatTime(t: string) {
 <style scoped>
 .checkin-page {
   @apply min-h-screen relative;
-  background: #0a0a0f;
+  background: var(--bg);
   font-family: 'Noto Sans SC', system-ui, sans-serif;
 }
 
@@ -179,7 +179,7 @@ function formatTime(t: string) {
 .page-title {
   font-family: 'Bebas Neue', sans-serif;
   @apply text-4xl tracking-wider;
-  color: #fff;
+  color: var(--text);
 }
 .quota-badge {
   @apply px-3 py-1 rounded-full text-sm font-bold;
@@ -195,18 +195,20 @@ function formatTime(t: string) {
 
 .form-card {
   @apply rounded-2xl p-6 mb-6;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--card);
+  border: 1px solid var(--border);
   animation: fadeInUp 0.5s 0.1s ease both;
 }
 .form-section { @apply mb-5; }
 .form-label {
-  @apply block text-xs text-white/40 mb-2 tracking-wider uppercase;
+  @apply block text-xs mb-2 tracking-wider uppercase;
+  color: var(--text-muted);
 }
 .form-input {
-  @apply w-full px-4 py-3 rounded-xl text-sm text-white transition-all duration-300;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  @apply w-full px-4 py-3 rounded-xl text-sm transition-all duration-300;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--border);
   outline: none;
 }
 .form-input:focus {
@@ -220,12 +222,12 @@ function formatTime(t: string) {
 }
 .type-chip {
   @apply py-3 rounded-xl text-center transition-all duration-200;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.5);
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
   cursor: pointer;
 }
-.type-chip:hover { background: rgba(255, 255, 255, 0.06); }
+.type-chip:hover { background: var(--card); }
 .type-chip.on {
   background: rgba(255, 107, 107, 0.1);
   border-color: rgba(255, 107, 107, 0.4);
@@ -237,9 +239,9 @@ function formatTime(t: string) {
 .duration-row { @apply flex flex-wrap gap-2; }
 .dur-btn {
   @apply px-4 py-2 rounded-lg text-sm transition-all duration-200;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.5);
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
   cursor: pointer;
 }
 .dur-btn.on {
@@ -251,7 +253,7 @@ function formatTime(t: string) {
 .submit-btn {
   @apply w-full py-3 rounded-xl text-sm font-semibold tracking-widest transition-all duration-300 mt-4;
   background: linear-gradient(135deg, #FF6B6B, #FF8E53);
-  color: #fff;
+  color: var(--text);
   cursor: pointer;
 }
 .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
@@ -270,24 +272,25 @@ function formatTime(t: string) {
   animation: fadeInUp 0.5s 0.2s ease both;
 }
 .section-title {
-  @apply text-xs text-white/30 uppercase tracking-widest mb-3;
+  @apply text-xs uppercase tracking-widest mb-3;
+  color: var(--text-muted);
 }
 .empty-text {
   @apply text-sm text-center py-8;
-  color: rgba(255, 255, 255, 0.2);
+  color: var(--text-muted);
 }
 .record-card {
   @apply flex justify-between items-start p-4 rounded-xl mb-2;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: var(--card);
+  border: 1px solid var(--border);
 }
 .record-left { @apply flex flex-col; }
-.record-type { @apply text-sm font-medium; color: #fff; }
-.record-note { @apply text-xs mt-1; color: rgba(255, 255, 255, 0.3); }
+.record-type { @apply text-sm font-medium; color: var(--text); }
+.record-note { @apply text-xs mt-1; color: var(--text-secondary); }
 .record-right { @apply flex flex-col items-end gap-0.5; }
 .record-dur { @apply text-sm font-bold; color: #FF6B6B; }
-.record-cal { @apply text-xs; color: rgba(255, 255, 255, 0.4); }
-.record-time { @apply text-xs; color: rgba(255, 255, 255, 0.2); }
+.record-cal { @apply text-xs; color: var(--text-secondary); }
+.record-time { @apply text-xs; color: var(--text-muted); }
 
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(16px); }

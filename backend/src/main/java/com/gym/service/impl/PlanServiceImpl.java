@@ -140,6 +140,8 @@ public class PlanServiceImpl implements PlanService {
         if (u == null || u.getRole() < 1) throw new RuntimeException("仅督导和管理员可发布模板");
         Plan plan = planMapper.selectById(planId);
         if (plan == null) throw new RuntimeException("计划不存在");
+        if (u.getRole() < 2 && !plan.getUserId().equals(userId)) throw new RuntimeException("只能发布自己的计划");
+        if (plan.getStatus() == 0) throw new RuntimeException("已停用的计划不能发布为模板");
         plan.setIsTemplate(1);
         plan.setSource("模板");
         planMapper.updateById(plan);
@@ -151,8 +153,19 @@ public class PlanServiceImpl implements PlanService {
         if (u == null || u.getRole() < 1) throw new RuntimeException("仅督导和管理员可取消发布");
         Plan plan = planMapper.selectById(planId);
         if (plan == null) throw new RuntimeException("计划不存在");
+        if (u.getRole() < 2 && !plan.getUserId().equals(userId)) throw new RuntimeException("只能取消自己发布的模板");
         plan.setIsTemplate(0);
         planMapper.updateById(plan);
+    }
+
+    @Override
+    public void deletePlan(Long userId, Long planId) {
+        User u = userMapper.selectById(userId);
+        if (u == null || u.getRole() < 1) throw new RuntimeException("仅督导和管理员可删除计划");
+        Plan plan = planMapper.selectById(planId);
+        if (plan == null) throw new RuntimeException("计划不存在");
+        if (u.getRole() < 2 && !plan.getUserId().equals(userId)) throw new RuntimeException("只能删除自己的计划");
+        planMapper.deleteById(planId);
     }
 
     @Override
@@ -224,6 +237,7 @@ public class PlanServiceImpl implements PlanService {
     private PlanVO toVO(Plan plan, List<PlanDetailDTO> details) {
         PlanVO vo = new PlanVO();
         vo.setId(plan.getId());
+        vo.setUserId(plan.getUserId());
         vo.setPlanName(plan.getPlanName());
         vo.setGoal(plan.getGoal());
         vo.setDifficulty(plan.getDifficulty());

@@ -6,6 +6,7 @@ import java.util.List;
 @Data
 public class PlanVO {
     private Long id;
+    private Long userId;
     private String planName;
     private String goal;
     private String difficulty;

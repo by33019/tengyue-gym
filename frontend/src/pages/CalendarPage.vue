@@ -147,7 +147,7 @@ const streakDays = computed(() => {
 <style scoped>
 .calendar-page {
   @apply min-h-screen relative;
-  background: #0a0a0f;
+  background: var(--bg);
   font-family: 'Noto Sans SC', system-ui, sans-serif;
 }
 
@@ -158,16 +158,16 @@ const streakDays = computed(() => {
 .page-title {
   font-family: 'Bebas Neue', sans-serif;
   @apply text-3xl tracking-wider;
-  color: #fff;
+  color: var(--text);
 }
 .nav-arrow {
   @apply w-10 h-10 rounded-xl text-lg transition-all duration-200;
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--card);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
   cursor: pointer;
 }
-.nav-arrow:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+.nav-arrow:hover { background: var(--hover-bg); color: var(--text); }
 
 .summary-row {
   @apply flex gap-4 mb-6;
@@ -175,20 +175,20 @@ const streakDays = computed(() => {
 }
 .summary-item {
   @apply flex-1 p-4 rounded-xl text-center;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: var(--card);
+  border: 1px solid var(--border);
 }
 .sum-num {
   font-family: 'Bebas Neue', sans-serif;
   @apply block text-2xl font-bold;
   color: #FF6B6B;
 }
-.sum-label { @apply text-xs mt-1; color: rgba(255, 255, 255, 0.3); }
+.sum-label { @apply text-xs mt-1; color: var(--text-secondary); }
 
 .calendar-card {
   @apply rounded-2xl p-4;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: var(--card);
+  border: 1px solid var(--border);
   animation: fadeInUp 0.5s 0.15s ease both;
 }
 .weekday-row {
@@ -196,39 +196,39 @@ const streakDays = computed(() => {
 }
 .weekday-label {
   @apply text-center text-xs py-2;
-  color: rgba(255, 255, 255, 0.2);
+  color: var(--text-muted);
 }
 .date-grid {
   @apply grid grid-cols-7 gap-1;
 }
 .date-cell {
   @apply aspect-square rounded-lg flex flex-col items-center justify-center text-sm relative transition-all duration-200;
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--text-secondary);
 }
-.date-cell.other-month { color: rgba(255, 255, 255, 0.05); }
+.date-cell.other-month { color: var(--text-muted); }
 .date-cell.today {
   box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.4);
 }
-.date-cell.has-data { color: #fff; }
+.date-cell.has-data { color: var(--text); }
 .date-cell.level-1 { background: rgba(255, 107, 107, 0.15); }
 .date-cell.level-2 { background: rgba(255, 107, 107, 0.3); }
 .date-cell.level-3 { background: rgba(255, 107, 107, 0.5); }
 .date-num { @apply relative z-10 text-xs; }
 .date-dot {
   @apply absolute bottom-1 text-[10px] font-bold;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text);
 }
 
 .legend {
   @apply flex items-center gap-2 mt-4 justify-end;
   animation: fadeInUp 0.5s 0.2s ease both;
 }
-.legend-label { @apply text-xs; color: rgba(255, 255, 255, 0.2); }
+.legend-label { @apply text-xs; color: var(--text-muted); }
 .legend-blocks { @apply flex gap-1; }
 .legend-block {
   @apply w-3 h-3 rounded;
 }
-.l0 { background: rgba(255, 255, 255, 0.05); }
+.l0 { background: var(--card); }
 .l1 { background: rgba(255, 107, 107, 0.15); }
 .l2 { background: rgba(255, 107, 107, 0.3); }
 .l3 { background: rgba(255, 107, 107, 0.5); }

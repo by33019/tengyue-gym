@@ -240,7 +240,7 @@ function handleLogout() {
 <style scoped>
 .profile-page {
   @apply min-h-screen relative;
-  background: #0a0a0f;
+  background: var(--bg);
   font-family: 'Noto Sans SC', system-ui, sans-serif;
 }
 .top-accent {
@@ -260,7 +260,7 @@ function handleLogout() {
   @apply w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold relative z-10;
   font-family: 'Bebas Neue', sans-serif;
   background: linear-gradient(135deg, #FF6B6B, #FF8E53);
-  color: #fff;
+  color: var(--text);
   object-fit: cover;
 }
 .avatar-glow {
@@ -285,12 +285,13 @@ function handleLogout() {
 
 /* 数据卡片 */
 .section-title {
-  @apply text-xs text-white/30 uppercase tracking-widest mt-8 mb-3;
+  @apply text-xs uppercase tracking-widest mt-8 mb-3;
+  color: var(--text-muted);
 }
 .data-card {
   @apply rounded-2xl p-6;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--card);
+  border: 1px solid var(--border);
   animation: fadeInUp 0.6s 0.1s ease both;
 }
 .data-grid {
@@ -300,47 +301,51 @@ function handleLogout() {
   @apply flex flex-col;
 }
 .data-value {
-  @apply text-xl font-bold text-white;
+  @apply text-xl font-bold;
+  color: var(--text);
   font-family: 'Bebas Neue', sans-serif;
 }
 .data-label {
-  @apply text-xs text-white/30 mt-0.5;
+  @apply text-xs mt-0.5;
+  color: var(--text-muted);
 }
 .edit-btn {
   @apply mt-4 px-4 py-2 rounded-lg text-sm transition-all duration-200;
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
   cursor: pointer;
 }
-.anon-row { @apply flex justify-between items-center mt-3 px-4 py-3 rounded-xl cursor-pointer transition-all; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
-.anon-row:hover { background: rgba(255,255,255,0.04); }
-.anon-label { @apply text-sm; color: rgba(255,255,255,0.5); }
-.anon-switch { @apply w-10 h-6 rounded-full relative transition-all duration-200; background: rgba(255,255,255,0.1); }
-.anon-switch::after { content: ''; @apply absolute w-4 h-4 rounded-full bg-white top-1 left-1 transition-all duration-200; }
+.anon-row { @apply flex justify-between items-center mt-3 px-4 py-3 rounded-xl cursor-pointer transition-all; background: var(--card); border: 1px solid var(--border); }
+.anon-row:hover { background: var(--card); }
+.anon-label { @apply text-sm; color: var(--text-secondary); }
+.anon-switch { @apply w-10 h-6 rounded-full relative transition-all duration-200; background: var(--hover-bg); }
+.anon-switch::after { content: ''; @apply absolute w-4 h-4 rounded-full top-1 left-1 transition-all duration-200; background: var(--text); }
 .anon-switch.on { background: #00F5A0; }
 .anon-switch.on::after { left: 20px; }
 
 .edit-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background: var(--card);
+  color: var(--text);
 }
 
 /* 编辑卡片 */
 .edit-card {
   @apply rounded-2xl p-6 mt-4;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--card);
+  border: 1px solid var(--border);
   animation: fadeIn 0.4s ease;
 }
 .form-row { @apply mb-4; }
 .form-label {
-  @apply block text-xs text-white/40 mb-2;
+  @apply block text-xs mb-2;
+  color: var(--text-muted);
 }
 .form-input {
-  @apply w-full px-4 py-3 rounded-xl text-sm text-white transition-all duration-300;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  @apply w-full px-4 py-3 rounded-xl text-sm transition-all duration-300;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--border);
   outline: none;
 }
 .form-input:focus {
@@ -350,9 +355,9 @@ function handleLogout() {
 .chip-row { @apply flex flex-wrap gap-2; }
 .chip {
   @apply px-4 py-2 rounded-lg text-sm transition-all duration-200;
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--card);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
   cursor: pointer;
 }
 .chip.on {
@@ -364,7 +369,7 @@ function handleLogout() {
 .submit-btn {
   @apply w-full py-3 rounded-xl text-sm font-semibold tracking-widest transition-all duration-300 mt-2 cursor-pointer;
   background: linear-gradient(135deg, #FF6B6B, #FF8E53);
-  color: #fff;
+  color: var(--text);
 }
 .submit-btn.secondary {
   background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
@@ -380,17 +385,18 @@ function handleLogout() {
 .achievement-row { @apply flex flex-wrap gap-3; }
 .achi-badge {
   @apply flex flex-col items-center gap-1 p-4 rounded-2xl min-w-[80px];
-  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+  background: var(--card); border: 1px solid var(--border);
 }
 .achi-icon { font-size: 28px; }
 .achi-text { @apply text-xs font-semibold; color: #FF6B6B; }
 .achi-7天 { border-color: rgba(205,127,50,0.3); }
 .achi-30天 { border-color: rgba(192,192,192,0.3); }
 .achi-100天 { border-color: rgba(255,215,0,0.3); }
-.no-achi { @apply text-xs py-4; color: rgba(255,255,255,0.15); }
+.no-achi { @apply text-xs py-4; color: var(--text-muted); }
 
 .logout-btn {
-  @apply w-full mt-8 py-3 rounded-xl text-sm text-white/30 transition-all duration-200 text-center;
+  @apply w-full mt-8 py-3 rounded-xl text-sm transition-all duration-200 text-center;
+  color: var(--text-muted);
   cursor: pointer;
 }
 .logout-btn:hover { color: #FF6B6B; }
